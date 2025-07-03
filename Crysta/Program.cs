@@ -1,12 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Configurar a string de conexão (ajuste conforme seu ambiente)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Adicionar DbContext
+builder.Services.AddDbContext<AnalyticPlatformContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// Adicionar OpenAPI (Swagger)
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -14,28 +21,29 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+// Endpoint para criar Role
+app.MapPost("/api/roles", async (CreateRoleDto dto, AnalyticPlatformContext context) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    if (string.IsNullOrWhiteSpace(dto.role_name))
+        return Results.BadRequest("RoleName is required.");
 
-app.MapGet("/weatherforecast", () =>
+    var exists = await context.AppRoles.AnyAsync(r => r.role_name == dto.role_name);
+    if (exists)
+        return Results.Conflict("Role already exists.");
+
+    var role = new AppRole { role_name = dto.role_name };
+
+    context.AppRoles.Add(role);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/api/roles/{role.id}", role);
+});
+
+// Endpoint para obter role por id (opcional)
+app.MapGet("/api/roles/{id:int}", async (int id, AnalyticPlatformContext context) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var role = await context.AppRoles.FindAsync(id);
+    return role is not null ? Results.Ok(role) : Results.NotFound();
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
