@@ -12,11 +12,12 @@ public class RolesController : ControllerBase
         _context = context;
     }
 
+    // http://localhost:5146/api/roles
     [HttpPost]
     public async Task<IActionResult> CreateRole(CreateRoleDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.RoleName))
-            return BadRequest("role_name is required.");
+            return BadRequest("RoleName is required.");
 
         var exists = await _context.AppRoles.AnyAsync(r => r.RoleName == dto.RoleName);
         if (exists)
@@ -33,6 +34,7 @@ public class RolesController : ControllerBase
         return CreatedAtAction(nameof(GetRoleById), new { id = role.RoleName }, role);
     }
 
+    // http://localhost:5146/api/roles/id
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRoleById(int id)
     {

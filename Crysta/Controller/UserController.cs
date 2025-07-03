@@ -4,17 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly AnalyticPlatformContext _context;
     private readonly PasswordHasher<AppUser> _passwordHasher;
 
-    public UserController(AnalyticPlatformContext context)
+    public UsersController(AnalyticPlatformContext context)
     {
         _context = context;
         _passwordHasher = new PasswordHasher<AppUser>();
     }
 
+    // http://localhost:5146/api/users
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateAppUserDto dto)
     {
@@ -53,6 +54,7 @@ public class UserController : ControllerBase
         });
     }
 
+    // http://localhost:5146/api/users/id
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(int id)
     {
