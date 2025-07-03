@@ -3,22 +3,26 @@ CREATE DATABASE AnalyticPlatform;
 GO
 
 CREATE TABLE AppRole (
-    id INT PRIMARY KEY IDENTITY,
-    role_name NVARCHAR(50) UNIQUE NOT NULL
+    Id INT PRIMARY KEY IDENTITY,
+    RoleName NVARCHAR(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE AppUser (
-    id INT PRIMARY KEY IDENTITY,
-    email NVARCHAR(100) UNIQUE NOT NULL,
-    password_hash NVARCHAR(255) NOT NULL,
-    fullname NVARCHAR(100),
-    creation_date DATETIME DEFAULT GETDATE()
+    Id INT PRIMARY KEY IDENTITY,
+    Email NVARCHAR(100) UNIQUE NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    FullName NVARCHAR(100),
+    PhoneNumber NVARCHAR(20) UNIQUE,
+    DocumentId NVARCHAR(20) UNIQUE NOT NULL,
+    DeletedAt DATETIME NULL,
+    BirthDate DATE NOT NULL,
+    CreationDate DATETIME DEFAULT GETDATE()
 );
 
 CREATE TABLE AppUserRole (
-    appUser_id INT FOREIGN KEY REFERENCES AppUser(id),
-    appRole_id INT FOREIGN KEY REFERENCES AppRole(id),
-    PRIMARY KEY (appUser_id, appRole_id)
+    AppUserId INT FOREIGN KEY REFERENCES AppUser(Id),
+    AppRoleId INT FOREIGN KEY REFERENCES AppRole(Id),
+    PRIMARY KEY (AppUserId, AppRoleId)
 );
 
  
@@ -28,36 +32,36 @@ CREATE TABLE AppUserRole (
  
 -- Dimensão: Tempo
 CREATE TABLE DimTime (
-    id INT PRIMARY KEY,
-    dimtime_date DATE,
-    dimtime_year INT,
-    dimtime_month INT,
-    dimtime_quarter INT,
-    dimtime_day_of_week VARCHAR(10)
+    Id INT PRIMARY KEY,
+    DimTimeDate DATE,
+    DimTimeYear INT,
+    DimTimeMonth INT,
+    DimTimeQuarter INT,
+    DimTimeDayOfWeek VARCHAR(10)
 );
 
 -- Dimensão: Conta
 CREATE TABLE DimAccount (
-    id INT PRIMARY KEY,
-    account_number VARCHAR(20),
-    appUser_id INT references AppUser(id),
-    fullname NVARCHAR(100),
-    region VARCHAR(50),
-    active BIT
+    Id INT PRIMARY KEY,
+    AccountNumber VARCHAR(20),
+    AppUserId INT references AppUser(Id),
+    FullName NVARCHAR(100),
+    Region VARCHAR(50),
+    Active BIT
 );
 
 -- Dimensão: Tipo de Transação
 CREATE TABLE DimTransactionType (
-    id INT PRIMARY KEY,
-    dimtransactiontype_type VARCHAR(20) -- Ex: 'transferencia', 'pagamento'
+    Id INT PRIMARY KEY,
+    DimTransactionType_Type VARCHAR(20) -- Ex: 'transferencia', 'pagamento'
 );
 
 -- Dimensão: Ativo Financeiro
 CREATE TABLE DimAsset (
-    id INT PRIMARY KEY,
-    symbol VARCHAR(10),
-    dimasset_name VARCHAR(50),
-    dimasset_type VARCHAR(20)
+    Id INT PRIMARY KEY,
+    Symbol VARCHAR(10),
+    DimAssetName VARCHAR(50),
+    DimAssetType VARCHAR(20)
 );
  
 -- ========================
@@ -66,18 +70,18 @@ CREATE TABLE DimAsset (
 
 -- Fato: Transações Bancárias
 CREATE TABLE FactTransaction (
-    id INT PRIMARY KEY IDENTITY,
-    date_id INT FOREIGN KEY REFERENCES DimTime(id),
-    account_origin_id INT FOREIGN KEY REFERENCES DimAccount(id),
-    account_destination_id INT FOREIGN KEY REFERENCES DimAccount(id),
-    type_transaction_id INT FOREIGN KEY REFERENCES DimTransactionType(id),
-    value DECIMAL(18, 2) NOT NULL
+    Id INT PRIMARY KEY IDENTITY,
+    DateId INT FOREIGN KEY REFERENCES DimTime(Id),
+    AccountOriginId INT FOREIGN KEY REFERENCES DimAccount(Id),
+    AccountDestinationId INT FOREIGN KEY REFERENCES DimAccount(Id),
+    TypeTransactionId INT FOREIGN KEY REFERENCES DimTransactionType(Id),
+    ValueTransaction DECIMAL(18, 2) NOT NULL
 );
 
 -- Fato: Cotações de Ativos
 CREATE TABLE FactCotation (
-    id INT PRIMARY KEY IDENTITY,
-    dimtime_id INT FOREIGN KEY REFERENCES DimTime(id),
-    dimasset_id INT FOREIGN KEY REFERENCES DimAsset(id),
-    price DECIMAL(18, 6)
+    Id INT PRIMARY KEY IDENTITY,
+    DimTimeId INT FOREIGN KEY REFERENCES DimTime(Id),
+    DimAssetId INT FOREIGN KEY REFERENCES DimAsset(Id),
+    Price DECIMAL(18, 6)
 );

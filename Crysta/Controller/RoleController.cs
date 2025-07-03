@@ -15,22 +15,22 @@ public class RolesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateRole(CreateRoleDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.role_name))
+        if (string.IsNullOrWhiteSpace(dto.RoleName))
             return BadRequest("role_name is required.");
 
-        var exists = await _context.AppRoles.AnyAsync(r => r.role_name == dto.role_name);
+        var exists = await _context.AppRoles.AnyAsync(r => r.RoleName == dto.RoleName);
         if (exists)
             return Conflict("Role already exists.");
 
         var role = new AppRole
         {
-            role_name = dto.role_name
+            RoleName = dto.RoleName
         };
 
         _context.AppRoles.Add(role);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetRoleById), new { id = role.id }, role);
+        return CreatedAtAction(nameof(GetRoleById), new { id = role.RoleName }, role);
     }
 
     [HttpGet("{id}")]
