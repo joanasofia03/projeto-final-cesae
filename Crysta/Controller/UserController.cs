@@ -23,10 +23,14 @@ public class UsersController : ControllerBase
             return BadRequest(ModelState);
 
         if (await _context.AppUsers.AnyAsync(u => u.Email == dto.Email))
-            return Conflict("Este e-mail já está registrado.");
+            return Conflict("This email is already registered.");
 
         if (await _context.AppUsers.AnyAsync(u => u.DocumentId == dto.DocumentId))
-            return Conflict("Este documento já está registrado.");
+            return Conflict("This document is already registered.");
+
+        var clientRole = await _context.AppRoles.FirstOrDefaultAsync(r => r.RoleName == "Client");
+        if (clientRole == null)
+            return StatusCode(500, "Client role not found in the database.");
 
         var user = new AppUser
         {
@@ -41,6 +45,15 @@ public class UsersController : ControllerBase
         user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
 
         _context.AppUsers.Add(user);
+        await _context.SaveChangesAsync();
+
+        var userRole = new AppUserRole
+        {
+            AppUserId = user.Id,
+            AppRoleId = clientRole.Id
+        };
+
+        _context.AppUserRoles.Add(userRole);
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new

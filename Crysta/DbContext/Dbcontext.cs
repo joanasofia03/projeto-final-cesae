@@ -8,6 +8,7 @@ public class AnalyticPlatformContext : DbContext
 
     public DbSet<AppRole> AppRoles { get; set; }
     public DbSet<AppUser> AppUsers { get; set; }
+    public DbSet<AppUserRole> AppUserRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,7 +37,20 @@ public class AnalyticPlatformContext : DbContext
                   .HasMaxLength(50);
             entity.HasIndex(e => e.RoleName).IsUnique();
         });
-        
-        
+
+        modelBuilder.Entity<AppUserRole>(entity =>
+        {
+            entity.ToTable("AppUserRole");
+            entity.HasKey(e => new { e.AppUserId, e.AppRoleId });
+
+            entity.HasOne(ur => ur.AppUser)
+                .WithMany(u => u.AppUserRoles)
+                .HasForeignKey(ur => ur.AppUserId);
+
+            entity.HasOne(ur => ur.AppRole)
+                .WithMany(r => r.AppUserRoles)
+                .HasForeignKey(ur => ur.AppRoleId);
+        });
+
     }
 }

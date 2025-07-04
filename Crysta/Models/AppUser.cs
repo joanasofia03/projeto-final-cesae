@@ -32,4 +32,6 @@ public class AppUser
     public DateTime BirthDate { get; set; }
 
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
+
+    public ICollection<AppUserRole> AppUserRoles { get; set; } = new List<AppUserRole>();
 }
