@@ -1,14 +1,26 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+var _jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
+if (_jwtSettings == null || string.IsNullOrEmpty(_jwtSettings.SecretKey))
+{
+    throw new Exception("JwtSettings is not configured properly. Please check your appsettings.json file.");
+}
+
+
 builder.Services.AddDbContext<AnalyticPlatformContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 // Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -16,6 +28,19 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Analytic Platform API", Version = "v1" });
 });
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.SecretKey))
+        };
+    });
 
 var app = builder.Build();
 
@@ -31,6 +56,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

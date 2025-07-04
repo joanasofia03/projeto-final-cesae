@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -86,4 +88,35 @@ public class UsersController : ControllerBase
             user.BirthDate
         });
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+            return Unauthorized();
+
+        var user = await _context.AppUsers
+            .Include(u => u.AppUserRoles)
+                .ThenInclude(ur => ur.AppRole)
+            .FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
+
+        if (user == null)
+            return NotFound();
+
+        var roles = user.AppUserRoles.Select(r => r.AppRole.RoleName).ToList();
+
+        var response = new UserLoginResponseDto
+        {
+            FullName = user.FullName ?? string.Empty,
+            Email = user.Email,
+            Roles = roles,
+            Token = ""
+        };
+
+        return Ok(response);
+    }
+
 }
