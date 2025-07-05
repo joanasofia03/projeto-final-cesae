@@ -50,7 +50,7 @@ builder.Services.AddAuthentication("Bearer")
             },
             OnChallenge = context =>
             {
-                context.HandleResponse(); // Impede a resposta padrão do middleware
+                context.HandleResponse();
                 context.Response.StatusCode = 401;
                 context.Response.ContentType = "application/json";
                 return context.Response.WriteAsync("{\"error\": \"Unauthorized access. Invalid or missing token.\"}");

@@ -34,11 +34,11 @@ public class AuthController : ControllerBase
             .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if (user == null || user.DeletedAt != null)
-            return Unauthorized("User or password invalid.");
+            return Unauthorized("Invalid user or password.");
 
         var passwordVerification = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
         if (passwordVerification == PasswordVerificationResult.Failed)
-            return Unauthorized("User or password invalid.");
+            return Unauthorized("Invalid user or password.");
 
         var roles = user.AppUserRoles.Select(ur => ur.AppRole.RoleName).ToList();
         var token = GenerateJwtToken(user, roles);
