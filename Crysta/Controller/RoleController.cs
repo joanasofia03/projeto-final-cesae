@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Administrator")]
 public class RolesController : ControllerBase
 {
     private readonly AnalyticPlatformContext _context;
@@ -13,9 +15,17 @@ public class RolesController : ControllerBase
     }
 
     // http://localhost:5146/api/roles
+    [Authorize(Roles = "Administrator")]
     [HttpPost]
     public async Task<IActionResult> CreateRole(CreateRoleDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var adminRole = await _context.AppRoles.FirstOrDefaultAsync(r => r.RoleName == "Administrator");
+        if (adminRole == null)
+            return StatusCode(500, "Administrator role not found in the database.");
+
         if (string.IsNullOrWhiteSpace(dto.RoleName))
             return BadRequest("RoleName is required.");
 
