@@ -22,13 +22,6 @@ builder.Services.AddControllers();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-// Configurar Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Analytic Platform API", Version = "v1" });
-});
-
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -65,16 +58,6 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 var app = builder.Build();
-
-// Configurar Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Analytic Platform API v1");
-    });
-}
 
 app.UseHttpsRedirection();
 

@@ -53,7 +53,7 @@ CREATE TABLE DimAccount (
 -- Dimensão: Tipo de Transação
 CREATE TABLE DimTransactionType (
     Id INT PRIMARY KEY,
-    DimTransactionType_Type VARCHAR(20) -- Ex: 'transferencia', 'pagamento'
+    DimTransactionType VARCHAR(20) -- Ex: 'transferencia', 'pagamento'
 );
 
 -- Dimensão: Ativo Financeiro
