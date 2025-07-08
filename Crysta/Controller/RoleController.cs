@@ -14,9 +14,9 @@ public class RolesController : ControllerBase
         _context = context;
     }
 
-    // http://localhost:5146/api/roles
+    // http://localhost:5146/api/roles/create-role
     [Authorize(Roles = "Administrator")]
-    [HttpPost]
+    [HttpPost("create-role")]
     public async Task<IActionResult> CreateRole(CreateRoleDto dto)
     {
         if (!ModelState.IsValid)

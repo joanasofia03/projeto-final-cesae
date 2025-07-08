@@ -17,8 +17,8 @@ public class UsersController : ControllerBase
         _passwordHasher = new PasswordHasher<AppUser>();
     }
 
-    // http://localhost:5146/api/users
-    [HttpPost]
+    // http://localhost:5146/api/users/create-user
+    [HttpPost("create-user")]
     public async Task<IActionResult> CreateUser([FromBody] CreateAppUserDto dto)
     {
         if (!ModelState.IsValid)
