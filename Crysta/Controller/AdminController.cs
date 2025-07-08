@@ -17,6 +17,7 @@ public class AdminController : ControllerBase
         _passwordHasher = new PasswordHasher<AppUser>();
     }
 
+    // POST http://localhost:5146/api/admin/create-admin
     [Authorize(Roles = "Administrator")]
     [HttpPost("create-admin")]
     public async Task<IActionResult> CreateAdmin([FromBody] CreateAppUserDto dto)

@@ -17,7 +17,7 @@ public class UsersController : ControllerBase
         _passwordHasher = new PasswordHasher<AppUser>();
     }
 
-    // http://localhost:5146/api/users/create-user
+    // POST http://localhost:5146/api/users/create-user
     [HttpPost("create-user")]
     public async Task<IActionResult> CreateUser([FromBody] CreateAppUserDto dto)
     {
@@ -69,7 +69,7 @@ public class UsersController : ControllerBase
         });
     }
 
-    // http://localhost:5146/api/users/id
+    // GET http://localhost:5146/api/users/id
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(int id)
     {
@@ -89,6 +89,7 @@ public class UsersController : ControllerBase
         });
     }
 
+    // GET http://localhost:5146/api/users/me
     [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()

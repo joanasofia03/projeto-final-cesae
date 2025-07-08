@@ -22,6 +22,7 @@ public class AuthController : ControllerBase
         _jwtSettings = jwtOptions.Value;
     }
 
+    // POST http://localhost:5146/api/auth/login
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
