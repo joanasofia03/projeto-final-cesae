@@ -28,7 +28,11 @@ public class CreateAppUserDto
     [Required(ErrorMessage = "Birth date is required.")]
     [DataType(DataType.Date)]
     [CustomValidation(typeof(CreateAppUserDto), nameof(ValidateBirthDate))]
+
     public DateTime BirthDate { get; set; }
+    [Required(ErrorMessage = "Region is required.")]
+    [StringLength(50)]
+    public string Region { get; set; } = null!;
 
     public static ValidationResult? ValidateBirthDate(DateTime birthDate, ValidationContext context)
     {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class AppRole
 {
     [Key]
-    public int Id { get; set; }
+    public int ID { get; set; }
 
     [Required(ErrorMessage = "Role name is required.")]
     [StringLength(50, ErrorMessage = "Role name must be at most 50 characters long.")]

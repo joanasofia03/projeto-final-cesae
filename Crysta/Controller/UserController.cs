@@ -41,6 +41,7 @@ public class UsersController : ControllerBase
             PhoneNumber = dto.PhoneNumber,
             DocumentId = dto.DocumentId,
             BirthDate = dto.BirthDate,
+            Region = dto.Region,
             CreationDate = DateTime.UtcNow
         };
 
@@ -51,16 +52,16 @@ public class UsersController : ControllerBase
 
         var userRole = new AppUserRole
         {
-            AppUserId = user.Id,
-            AppRoleId = clientRole.Id
+            AppUser_ID = user.ID,
+            AppRole_ID = clientRole.ID
         };
 
         _context.AppUserRoles.Add(userRole);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new
+        return CreatedAtAction(nameof(GetUserById), new { id = user.ID }, new
         {
-            user.Id,
+            user.ID,
             user.Email,
             user.FullName,
             user.PhoneNumber,
@@ -80,12 +81,13 @@ public class UsersController : ControllerBase
 
         return Ok(new
         {
-            user.Id,
+            user.ID,
             user.Email,
             user.FullName,
             user.PhoneNumber,
             user.DocumentId,
-            user.BirthDate
+            user.BirthDate,
+            user.Region
         });
     }
 
@@ -102,7 +104,7 @@ public class UsersController : ControllerBase
         var user = await _context.AppUsers
             .Include(u => u.AppUserRoles)
                 .ThenInclude(ur => ur.AppRole)
-            .FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
+            .FirstOrDefaultAsync(u => u.ID == int.Parse(userId));
 
         if (user == null)
             return NotFound();

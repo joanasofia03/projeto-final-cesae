@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 public class AppUser
 {
     [Key]
-    public int Id { get; set; }
+    public int ID { get; set; }
 
     [Required(ErrorMessage = "E-mail is required.")]
     [EmailAddress(ErrorMessage = "Invalid e-mail format.")]
@@ -32,6 +32,10 @@ public class AppUser
     [Required(ErrorMessage = "Birth date is required.")]
     [CustomValidation(typeof(AppUser), nameof(ValidateBirthDate))]
     public DateTime BirthDate { get; set; }
+
+    [Required(ErrorMessage = "Region is required.")]
+    [StringLength(50)]
+    public string Region { get; set; } = null!;
 
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 

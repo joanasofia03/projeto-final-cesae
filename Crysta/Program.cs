@@ -82,7 +82,7 @@ using (var scope = app.Services.CreateScope())
         });
         context.SaveChanges();
 
-        var adminRoleId = adminRoleEntry.Entity.Id;
+        var adminRoleId = adminRoleEntry.Entity.ID;
 
         if (!context.AppUsers.Any(u => u.Email == "admin@domain.com"))
         {
@@ -95,7 +95,8 @@ using (var scope = app.Services.CreateScope())
                 PhoneNumber = "99999999999",
                 DocumentId = "12345678900",
                 CreationDate = DateTime.Now,
-                BirthDate = new DateTime(1990, 1, 1)
+                BirthDate = new DateTime(1990, 1, 1),
+                Region = "Porto"
             };
 
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "admin123");
@@ -105,15 +106,15 @@ using (var scope = app.Services.CreateScope())
 
             context.AppUserRoles.Add(new AppUserRole
             {
-                AppUserId = adminUser.Id,
-                AppRoleId = adminRoleId
+                AppUser_ID = adminUser.ID,
+                AppRole_ID = adminRoleId
             });
             context.SaveChanges();
         }
     }
     else
     {
-        var adminRoleId = context.AppRoles.Single(r => r.RoleName == "Administrator").Id;
+        var adminRoleId = context.AppRoles.Single(r => r.RoleName == "Administrator").ID;
 
         if (!context.AppUsers.Any(u => u.Email == "admin@domain.com"))
         {
@@ -126,7 +127,8 @@ using (var scope = app.Services.CreateScope())
                 PhoneNumber = "99999999999",
                 DocumentId = "12345678900",
                 CreationDate = DateTime.Now,
-                BirthDate = new DateTime(1990, 1, 1)
+                BirthDate = new DateTime(1990, 1, 1),
+                Region = "Porto"
             };
 
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "admin123");
@@ -136,8 +138,8 @@ using (var scope = app.Services.CreateScope())
 
             context.AppUserRoles.Add(new AppUserRole
             {
-                AppUserId = adminUser.Id,
-                AppRoleId = adminRoleId
+                AppUser_ID = adminUser.ID,
+                AppRole_ID = adminRoleId
             });
             context.SaveChanges();
         }

@@ -53,14 +53,14 @@ public class AdminController : ControllerBase
 
         var userRole = new AppUserRole
         {
-            AppUserId = user.Id,
-            AppRoleId = adminRole.Id
+            AppUser_ID = user.ID,
+            AppRole_ID = adminRole.ID
         };
 
         _context.AppUserRoles.Add(userRole);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(CreateAdmin), new { id = user.Id }, user);
+        return CreatedAtAction(nameof(CreateAdmin), new { id = user.ID }, user);
     }
 
 }
