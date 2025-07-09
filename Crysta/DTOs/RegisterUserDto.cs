@@ -12,6 +12,7 @@ public class CreateAppUserDto
     [StringLength(255, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 255 characters.")]
     public string Password { get; set; } = null!;
 
+    [RegularExpression(@"^[A-Za-zÀ-ú\s]+$", ErrorMessage = "Full name must contain only letters and spaces.")]
     [StringLength(100)]
     public string? FullName { get; set; }
 
@@ -25,5 +26,17 @@ public class CreateAppUserDto
 
     [Required(ErrorMessage = "Birth date is required.")]
     [DataType(DataType.Date)]
+    [CustomValidation(typeof(CreateAppUserDto), nameof(ValidateBirthDate))]
     public DateTime BirthDate { get; set; }
+
+    public static ValidationResult? ValidateBirthDate(DateTime birthDate, ValidationContext context)
+    {
+        var today = DateTime.Today;
+        var age = today.Year - birthDate.Year;
+        if (birthDate > today.AddYears(-age)) age--;
+
+        return age >= 18
+            ? ValidationResult.Success
+            : new ValidationResult("User must be at least 18 years old.");
+    }
 }
