@@ -9,7 +9,8 @@ public class CreateAppUserDto
     public string Email { get; set; } = null!;
 
     [Required(ErrorMessage = "Password is required.")]
-    [StringLength(255, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 255 characters.")]
+    [StringLength(255, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 255 characters.")]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$", ErrorMessage = "Password must have at least one uppercase letter, one lowercase letter, one number, and one special character.")]
     public string Password { get; set; } = null!;
 
     [RegularExpression(@"^[A-Za-zÀ-ú\s]+$", ErrorMessage = "Full name must contain only letters and spaces.")]
