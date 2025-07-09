@@ -51,7 +51,7 @@ git clone https://github.com/joanaperpetuo263162630/projeto-final-cesae.git
 
 cd Crysta
 
-**Configure a base de dados no appsettings.json**
+**Configurar a base de dados no appsettings.json**
 
 **Correr as migrations:**
 
