@@ -25,103 +25,85 @@ CREATE TABLE AppUserRole (
     PRIMARY KEY (AppUserId, AppRoleId)
 );
 
- 
--- ========================
--- TABELAS DIMENSIONAIS
--- ========================
- -- Dimensão: Tempo
-CREATE TABLE Dim_Tempo (
-    ID_Tempo SERIAL PRIMARY KEY,
-    Data DATE NOT NULL,
-    Ano INT,
-    Mes INT,
-    Trimestre INT,
-    Dia_Semana VARCHAR(10),
-    Fim_de_Semana BOOLEAN
+ -- Dimension: Time
+CREATE TABLE Dim_Time (
+    Time_ID SERIAL PRIMARY KEY,
+    Date DATE NOT NULL,
+    Year INT,
+    Month INT,
+    Quarter INT,
+    Weekday_Name VARCHAR(10),
+    Is_Weekend BOOLEAN
 );
 
--- Dimensão: Utilizador
-CREATE TABLE Dim_Utilizador (
-    ID_Utilizador SERIAL PRIMARY KEY,
-    Nome VARCHAR(100),
-    Email VARCHAR(100),
-    Tipo_Utilizador VARCHAR(20), -- Cliente, Administrador
-    Regiao VARCHAR(50),
-    Data_Registro DATE
+-- Dimension: Account
+CREATE TABLE Dim_Account (
+    Account_ID SERIAL PRIMARY KEY,
+    Account_Type VARCHAR(30),
+    Account_Status VARCHAR(20),
+    User_ID INT,
+    Opening_Date DATE,
+    Currency VARCHAR(10),
+    FOREIGN KEY (User_ID) REFERENCES AppUser(Id)
+
+-- Dimension: Transaction Type
+CREATE TABLE Dim_Transaction_Type (
+    Transaction_Type_ID SERIAL PRIMARY KEY,
+    Description VARCHAR(50)
 );
 
--- Dimensão: Conta
-CREATE TABLE Dim_Conta (
-    ID_Conta SERIAL PRIMARY KEY,
-    Tipo_Conta VARCHAR(30),
-    Estado_Conta VARCHAR(20),
-    ID_Utilizador INT,
-    Data_Abertura DATE,
-    Moeda VARCHAR(10),
-    FOREIGN KEY (ID_Utilizador) REFERENCES Dim_Utilizador(ID_Utilizador)
+-- Dimension: Market Asset
+CREATE TABLE Dim_Market_Asset (
+    Asset_ID SERIAL PRIMARY KEY,
+    Asset_Name VARCHAR(100),
+    Asset_Type VARCHAR(30), -- Cryptocurrency, Stock
+    Symbol VARCHAR(10),
+    Base_Currency VARCHAR(10),
+    API_Source VARCHAR(100)
 );
 
--- Dimensão: Tipo de Transação
-CREATE TABLE Dim_Tipo_Transacao (
-    ID_Tipo_Transacao SERIAL PRIMARY KEY,
-    Descricao VARCHAR(50)
+-- Fact: Transactions
+CREATE TABLE Fact_Transactions (
+    Transaction_ID SERIAL PRIMARY KEY,
+    Source_Account_ID INT,
+    Destination_Account_ID INT,
+    Time_ID INT,
+    Transaction_Type_ID INT,
+    User_ID INT,
+    Transaction_Amount DECIMAL(18,2),
+    Balance_After_Transaction DECIMAL(18,2),
+    Execution_Channel VARCHAR(50),
+    Transaction_Status VARCHAR(30),
+
+    FOREIGN KEY (Source_Account_ID) REFERENCES Dim_Account(Account_ID),
+    FOREIGN KEY (Destination_Account_ID) REFERENCES Dim_Account(Account_ID),
+    FOREIGN KEY (Time_ID) REFERENCES Dim_Time(Time_ID),
+    FOREIGN KEY (Transaction_Type_ID) REFERENCES Dim_Transaction_Type(Transaction_Type_ID),
+    FOREIGN KEY (User_ID) REFERENCES AppUser(Id)
 );
 
--- Dimensão: Ativo de Mercado
-CREATE TABLE Dim_Ativo_Mercado (
-    ID_Ativo SERIAL PRIMARY KEY,
-    Nome_Ativo VARCHAR(100),
-    Tipo_Ativo VARCHAR(30), -- Criptomoeda, Ação
-    Simbolo VARCHAR(10),
-    Moeda_Base VARCHAR(10),
-    Fonte_API VARCHAR(100)
+-- Fact: Market Asset Historical Prices
+CREATE TABLE Fact_Market_Asset_History (
+    History_ID SERIAL PRIMARY KEY,
+    Asset_ID INT,
+    Time_ID INT,
+    Open_Price DECIMAL(18,4),
+    Close_Price DECIMAL(18,4),
+    Trading_Volume DECIMAL(18,2),
+
+    FOREIGN KEY (Asset_ID) REFERENCES Dim_Market_Asset(Asset_ID),
+    FOREIGN KEY (Time_ID) REFERENCES Dim_Time(Time_ID)
 );
 
--- ========================
--- TABELAS DIMENSIONAIS
--- ========================
--- Fato: Transações
-CREATE TABLE Fato_Transacoes (
-    ID_Transacao SERIAL PRIMARY KEY,
-    ID_Conta_Origem INT,
-    ID_Conta_Destino INT,
-    ID_Tempo INT,
-    ID_Tipo_Transacao INT,
-    ID_Utilizador INT,
-    Valor_Transacao DECIMAL(18,2),
-    Saldo_Apos_Transacao DECIMAL(18,2),
-    Meio_Execucao VARCHAR(50),
-    Estado_Transacao VARCHAR(30),
+-- Fact: Notifications / Alerts
+CREATE TABLE Fact_Notifications (
+    Notification_ID SERIAL PRIMARY KEY,
+    User_ID INT,
+    Time_ID INT,
+    Notification_Type VARCHAR(50), -- e.g., Balance Alert, Login Alert
+    Channel VARCHAR(20), -- Email, App
+    Status VARCHAR(20), -- Read, Unread
 
-    FOREIGN KEY (ID_Conta_Origem) REFERENCES Dim_Conta(ID_Conta),
-    FOREIGN KEY (ID_Conta_Destino) REFERENCES Dim_Conta(ID_Conta),
-    FOREIGN KEY (ID_Tempo) REFERENCES Dim_Tempo(ID_Tempo),
-    FOREIGN KEY (ID_Tipo_Transacao) REFERENCES Dim_Tipo_Transacao(ID_Tipo_Transacao),
-    FOREIGN KEY (ID_Utilizador) REFERENCES Dim_Utilizador(ID_Utilizador)
-);
-
--- Fato: Histórico de Ativos Financeiros
-CREATE TABLE Fato_Ativos_Historico (
-    ID_Historico SERIAL PRIMARY KEY,
-    ID_Ativo INT,
-    ID_Tempo INT,
-    Preco_Abertura DECIMAL(18,4),
-    Preco_Fecho DECIMAL(18,4),
-    Volume DECIMAL(18,2),
-
-    FOREIGN KEY (ID_Ativo) REFERENCES Dim_Ativo_Mercado(ID_Ativo),
-    FOREIGN KEY (ID_Tempo) REFERENCES Dim_Tempo(ID_Tempo)
-);
-
--- Fato: Notificações/Alertas
-CREATE TABLE Fato_Notificacoes (
-    ID_Notificacao SERIAL PRIMARY KEY,
-    ID_Utilizador INT,
-    ID_Tempo INT,
-    Tipo VARCHAR(50), -- Ex: Alerta de saldo, alerta de login
-    Canal VARCHAR(20), -- Email, App
-    Estado VARCHAR(20), -- Lida, Não lida
-
-    FOREIGN KEY (ID_Utilizador) REFERENCES Dim_Utilizador(ID_Utilizador),
-    FOREIGN KEY (ID_Tempo) REFERENCES Dim_Tempo(ID_Tempo)
+    FOREIGN KEY (User_ID) REFERENCES AppUser(Id),
+    FOREIGN KEY (Time_ID) REFERENCES Dim_Time(Time_ID)
 );
