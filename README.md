@@ -21,7 +21,7 @@ A aplicação tem como objetivo oferecer ao utilizador uma visão centralizada d
 | API Externa   | \[A definir]          |
 | Gestão Ágil   | Trello                |
 
-# 🧱 Estrutura Atual do Backend
+# 🧱 Estrutura Atual do Backend 
 
 /Crysta
 
