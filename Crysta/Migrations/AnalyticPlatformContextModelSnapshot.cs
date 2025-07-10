@@ -118,6 +118,245 @@ namespace Crysta.Migrations
                     b.ToTable("AppUserRole", (string)null);
                 });
 
+            modelBuilder.Entity("Dim_Account", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Account_Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Account_Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("AppUser_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("Opening_Date")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AppUser_ID");
+
+                    b.ToTable("Dim_Account", (string)null);
+                });
+
+            modelBuilder.Entity("Dim_Market_Asset", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("API_Source")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Asset_Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Asset_Type")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Base_Currency")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Symbol")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Dim_Market_Asset", (string)null);
+                });
+
+            modelBuilder.Entity("Dim_Time", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<bool>("Is_Weekend")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Weekday_Name")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("date_Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("date_Month")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("date_Quarter")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("date_Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Dim_Time", (string)null);
+                });
+
+            modelBuilder.Entity("Dim_Transaction_Type", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Dim_Transaction_Type_Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Dim_Transaction_Type", (string)null);
+                });
+
+            modelBuilder.Entity("Fact_Market_Asset_History", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int?>("Asset_ID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Close_Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Open_Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Time_ID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Trading_Volume")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Asset_ID");
+
+                    b.HasIndex("Time_ID");
+
+                    b.ToTable("Fact_Market_Asset_History", (string)null);
+                });
+
+            modelBuilder.Entity("Fact_Notifications", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int?>("AppUser_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Channel")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Fact_Notifications_Status")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Notification_Type")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("Time_ID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AppUser_ID");
+
+                    b.HasIndex("Time_ID");
+
+                    b.ToTable("Fact_Notifications", (string)null);
+                });
+
+            modelBuilder.Entity("Fact_Transactions", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("AppUser_ID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Balance_After_Transaction")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Destination_Account_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Execution_Channel")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Source_Account_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Time_ID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Transaction_Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Transaction_Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("Transaction_Type_ID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AppUser_ID");
+
+                    b.HasIndex("Destination_Account_ID");
+
+                    b.HasIndex("Source_Account_ID");
+
+                    b.HasIndex("Time_ID");
+
+                    b.HasIndex("Transaction_Type_ID");
+
+                    b.ToTable("Fact_Transactions", (string)null);
+                });
+
             modelBuilder.Entity("AppUserRole", b =>
                 {
                     b.HasOne("AppRole", "AppRole")
@@ -137,6 +376,93 @@ namespace Crysta.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("Dim_Account", b =>
+                {
+                    b.HasOne("AppUser", "AppUser")
+                        .WithMany("Accounts")
+                        .HasForeignKey("AppUser_ID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Fact_Market_Asset_History", b =>
+                {
+                    b.HasOne("Dim_Market_Asset", "Asset")
+                        .WithMany("MarketAssetHistories")
+                        .HasForeignKey("Asset_ID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Dim_Time", "Time")
+                        .WithMany("MarketAssetHistories")
+                        .HasForeignKey("Time_ID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Asset");
+
+                    b.Navigation("Time");
+                });
+
+            modelBuilder.Entity("Fact_Notifications", b =>
+                {
+                    b.HasOne("AppUser", "AppUser")
+                        .WithMany("Notifications")
+                        .HasForeignKey("AppUser_ID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Dim_Time", "Time")
+                        .WithMany("Notifications")
+                        .HasForeignKey("Time_ID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Time");
+                });
+
+            modelBuilder.Entity("Fact_Transactions", b =>
+                {
+                    b.HasOne("AppUser", "AppUser")
+                        .WithMany("Transactions")
+                        .HasForeignKey("AppUser_ID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dim_Account", "DestinationAccount")
+                        .WithMany("DestinationTransactions")
+                        .HasForeignKey("Destination_Account_ID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dim_Account", "SourceAccount")
+                        .WithMany("SourceTransactions")
+                        .HasForeignKey("Source_Account_ID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dim_Time", "Time")
+                        .WithMany("Transactions")
+                        .HasForeignKey("Time_ID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Dim_Transaction_Type", "TransactionType")
+                        .WithMany("Transactions")
+                        .HasForeignKey("Transaction_Type_ID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("DestinationAccount");
+
+                    b.Navigation("SourceAccount");
+
+                    b.Navigation("Time");
+
+                    b.Navigation("TransactionType");
+                });
+
             modelBuilder.Entity("AppRole", b =>
                 {
                     b.Navigation("AppUserRoles");
@@ -144,7 +470,39 @@ namespace Crysta.Migrations
 
             modelBuilder.Entity("AppUser", b =>
                 {
+                    b.Navigation("Accounts");
+
                     b.Navigation("AppUserRoles");
+
+                    b.Navigation("Notifications");
+
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Dim_Account", b =>
+                {
+                    b.Navigation("DestinationTransactions");
+
+                    b.Navigation("SourceTransactions");
+                });
+
+            modelBuilder.Entity("Dim_Market_Asset", b =>
+                {
+                    b.Navigation("MarketAssetHistories");
+                });
+
+            modelBuilder.Entity("Dim_Time", b =>
+                {
+                    b.Navigation("MarketAssetHistories");
+
+                    b.Navigation("Notifications");
+
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Dim_Transaction_Type", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

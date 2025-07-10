@@ -74,6 +74,183 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<AnalyticPlatformContext>();
     context.Database.Migrate();
 
+    // CLIENT ROLE SEED
+    if (!context.AppRoles.Any(r => r.RoleName == "Client"))
+    {
+        context.AppRoles.Add(new AppRole { RoleName = "Client" });
+        context.SaveChanges();
+    }
+
+    var clientRoleId = context.AppRoles.Single(r => r.RoleName == "Client").ID;
+
+    // PASSWORD HASHER
+    var passwordHasher = new PasswordHasher<AppUser>();
+
+    // CLIENT USERS SEED
+    var client1 = context.AppUsers.FirstOrDefault(u => u.Email == "client1@domain.com");
+    var client2 = context.AppUsers.FirstOrDefault(u => u.Email == "client2@domain.com");
+
+    if (client1 == null)
+    {
+        client1 = new AppUser
+        {
+            Email = "client1@domain.com",
+            FullName = "Client One",
+            PhoneNumber = "1234567890",
+            DocumentId = "11111111111",
+            BirthDate = new DateTime(1995, 5, 10),
+            Region = "Lisbon",
+            CreationDate = DateTime.UtcNow,
+        };
+        client1.PasswordHash = passwordHasher.HashPassword(client1, "client123");
+        context.AppUsers.Add(client1);
+        context.SaveChanges();
+
+        context.AppUserRoles.Add(new AppUserRole
+        {
+            AppUser_ID = client1.ID,
+            AppRole_ID = clientRoleId
+        });
+        context.SaveChanges();
+    }
+
+    if (client2 == null)
+    {
+        client2 = new AppUser
+        {
+            Email = "client2@domain.com",
+            FullName = "Client Two",
+            PhoneNumber = "0987654321",
+            DocumentId = "22222222222",
+            BirthDate = new DateTime(1993, 8, 20),
+            Region = "Porto",
+            CreationDate = DateTime.UtcNow,
+        };
+        client2.PasswordHash = passwordHasher.HashPassword(client2, "client123");
+        context.AppUsers.Add(client2);
+        context.SaveChanges();
+
+        context.AppUserRoles.Add(new AppUserRole
+        {
+            AppUser_ID = client2.ID,
+            AppRole_ID = clientRoleId
+        });
+        context.SaveChanges();
+    }
+
+    // ACCOUNT SEED
+    var account1 = context.Dim_Accounts.FirstOrDefault(a => a.AppUser_ID == client1.ID);
+    var account2 = context.Dim_Accounts.FirstOrDefault(a => a.AppUser_ID == client2.ID);
+
+    if (account1 == null)
+    {
+        account1 = new Dim_Account
+        {
+            Account_Type = "Checking",
+            Account_Status = "Active",
+            AppUser_ID = client1.ID,
+            Opening_Date = DateTime.UtcNow.Date,
+            Currency = "EUR"
+        };
+        context.Dim_Accounts.Add(account1);
+        context.SaveChanges();
+    }
+
+    if (account2 == null)
+    {
+        account2 = new Dim_Account
+        {
+            Account_Type = "Checking",
+            Account_Status = "Active",
+            AppUser_ID = client2.ID,
+            Opening_Date = DateTime.UtcNow.Date,
+            Currency = "EUR"
+        };
+        context.Dim_Accounts.Add(account2);
+        context.SaveChanges();
+    }
+
+    // TRANSACTION TYPE SEED
+    if (!context.Dim_Transaction_Types.Any(t => t.Dim_Transaction_Type_Description == "Transfer"))
+    {
+        context.Dim_Transaction_Types.Add(new Dim_Transaction_Type
+        {
+            Dim_Transaction_Type_Description = "Transfer"
+        });
+        context.SaveChanges();
+    }
+    var transferTypeId = context.Dim_Transaction_Types
+        .First(t => t.Dim_Transaction_Type_Description == "Transfer").ID;
+
+    // TIME SEED
+    var today = DateTime.UtcNow;
+    var timeEntry = context.Dim_Time.FirstOrDefault(t => t.date_Date == today);
+    if (timeEntry == null && account1 != null && account2 != null)
+    {
+        timeEntry = new Dim_Time
+        {
+            date_Date = today,
+            date_Year = today.Year,
+            date_Month = today.Month,
+            date_Quarter = (today.Month - 1) / 3 + 1,
+            Weekday_Name = today.DayOfWeek.ToString(),
+            Is_Weekend = today.DayOfWeek == DayOfWeek.Saturday || today.DayOfWeek == DayOfWeek.Sunday
+        };
+        context.Dim_Time.Add(timeEntry);
+        context.SaveChanges();
+    }
+
+    var today2 = DateTime.UtcNow;
+    var timeEntry2 = context.Dim_Time.FirstOrDefault(t => t.date_Date == today2);
+    if (timeEntry2 == null && account1 != null && account2 != null)
+    {
+        timeEntry2 = new Dim_Time
+        {
+            date_Date = today2,
+            date_Year = today2.Year,
+            date_Month = today2.Month,
+            date_Quarter = (today2.Month - 1) / 3 + 1,
+            Weekday_Name = today2.DayOfWeek.ToString(),
+            Is_Weekend = today2.DayOfWeek == DayOfWeek.Saturday || today2.DayOfWeek == DayOfWeek.Sunday
+        };
+        context.Dim_Time.Add(timeEntry2);
+        context.SaveChanges();
+    }
+
+    // TRANSACTIONS SEED
+    if (!context.Fact_Transactions.Any(t => t.Source_Account_ID == account1.ID && t.Destination_Account_ID == account2.ID))
+    {
+        // Transaction 1: Client1 sends 100 EUR to Client2
+        context.Fact_Transactions.Add(new Fact_Transactions
+        {
+            Source_Account_ID = account1.ID,
+            Destination_Account_ID = account2.ID,
+            Time_ID = timeEntry.ID,
+            Transaction_Type_ID = transferTypeId,
+            AppUser_ID = client1.ID,
+            Transaction_Amount = 100m,
+            Balance_After_Transaction = 900m, // Assume original balance was 1000
+            Execution_Channel = "MobileApp",
+            Transaction_Status = "Completed"
+        });
+
+        // Transaction 2: Client2 sends 50 EUR back to Client1
+        context.Fact_Transactions.Add(new Fact_Transactions
+        {
+            Source_Account_ID = account2.ID,
+            Destination_Account_ID = account1.ID,
+            Time_ID = timeEntry2.ID,
+            Transaction_Type_ID = transferTypeId,
+            AppUser_ID = client2.ID,
+            Transaction_Amount = 50m,
+            Balance_After_Transaction = 950m, // Assume original was 1000, +100 -50 = 1050
+            Execution_Channel = "WebPortal",
+            Transaction_Status = "Completed"
+        });
+
+        context.SaveChanges();
+    }
+
     if (!context.AppRoles.Any(r => r.RoleName == "Administrator"))
     {
         var adminRoleEntry = context.AppRoles.Add(new AppRole
@@ -86,7 +263,6 @@ using (var scope = app.Services.CreateScope())
 
         if (!context.AppUsers.Any(u => u.Email == "admin@domain.com"))
         {
-            var passwordHasher = new PasswordHasher<AppUser>();
 
             var adminUser = new AppUser
             {
@@ -118,7 +294,6 @@ using (var scope = app.Services.CreateScope())
 
         if (!context.AppUsers.Any(u => u.Email == "admin@domain.com"))
         {
-            var passwordHasher = new PasswordHasher<AppUser>();
 
             var adminUser = new AppUser
             {
@@ -144,6 +319,8 @@ using (var scope = app.Services.CreateScope())
             context.SaveChanges();
         }
     }
+
+    
 }
 
 app.Run();

@@ -43,14 +43,17 @@ public class AppUser
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 
     public ICollection<AppUserRole> AppUserRoles { get; set; } = new List<AppUserRole>();
+    public ICollection<Dim_Account> Accounts { get; set; } = new List<Dim_Account>();
+    public ICollection<Fact_Transactions>? Transactions { get; set; }
+    public ICollection<Fact_Notifications> Notifications { get; set; } = new List<Fact_Notifications>();
 
     public static ValidationResult? ValidateBirthDate(DateTime birthDate, ValidationContext context)
     {
-    var age = DateTime.Today.Year - birthDate.Year;
-    if (birthDate > DateTime.Today.AddYears(-age)) age--;
+        var age = DateTime.Today.Year - birthDate.Year;
+        if (birthDate > DateTime.Today.AddYears(-age)) age--;
 
-    return age >= 18 
-        ? ValidationResult.Success 
-        : new ValidationResult("User must be at least 18 years old.");
+        return age >= 18
+            ? ValidationResult.Success
+            : new ValidationResult("User must be at least 18 years old.");
     }
 }
