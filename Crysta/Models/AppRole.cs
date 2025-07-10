@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class AppRole
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ID { get; set; }
 
     [Required(ErrorMessage = "Role name is required.")]
