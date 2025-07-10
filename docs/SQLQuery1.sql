@@ -51,11 +51,11 @@ CREATE TABLE Dim_Time (
 -- Dimensão: Account
 CREATE TABLE Dim_Account (
     ID INT IDENTITY,
-    Account_Type VARCHAR(30) NULL,
-    Account_Status VARCHAR(20) NULL,
-    AppUser_ID INT NULL,
-    Opening_Date DATE NULL,
-    Currency VARCHAR(10) NULL,
+    Account_Type VARCHAR(30) NOT NULL,
+    Account_Status VARCHAR(20) NOT NULL,
+    AppUser_ID INT NOT NULL,
+    Opening_Date DATE NOT NULL,
+    Currency VARCHAR(10) NOT NULL,
     CONSTRAINT PK_Dim_Account_ID PRIMARY KEY (ID),
     CONSTRAINT FK_Dim_Account_User FOREIGN KEY (AppUser_ID) REFERENCES AppUser(ID)
 );
