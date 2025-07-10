@@ -63,7 +63,7 @@ CREATE TABLE Dim_Account (
 -- Dimensão: Transaction Type
 CREATE TABLE Dim_Transaction_Type (
     ID INT IDENTITY,
-    Dim_Transaction_Type_Description VARCHAR(50) NULL,
+    Dim_Transaction_Type_Description VARCHAR(50) NOT NULL,
     CONSTRAINT PK_Dim_Transaction_Type_ID PRIMARY KEY (ID)
 );
 
@@ -81,15 +81,15 @@ CREATE TABLE Dim_Market_Asset (
 -- Fato: Transactions
 CREATE TABLE Fact_Transactions (
     ID INT IDENTITY,
-    Source_Account_ID INT NULL,
+    Source_Account_ID INT NOT NULL,
     Destination_Account_ID INT NULL,
     Time_ID INT NULL,
-    Transaction_Type_ID INT NULL,
-    AppUser_ID INT NULL,
-    Transaction_Amount DECIMAL(18,2) NULL,
-    Balance_After_Transaction DECIMAL(18,2) NULL,
+    Transaction_Type_ID INT NOT NULL,
+    AppUser_ID INT NOT NULL,
+    Transaction_Amount DECIMAL(18,2) NOT NULL,
+    Balance_After_Transaction DECIMAL(18,2) NOT NULL,
     Execution_Channel VARCHAR(50) NULL,
-    Transaction_Status VARCHAR(30) NULL,
+    Transaction_Status VARCHAR(30) NOT NULL,
     CONSTRAINT PK_Fact_Transactions_ID PRIMARY KEY (ID),
     CONSTRAINT FK_Fact_Transactions_SourceAccount FOREIGN KEY (Source_Account_ID) REFERENCES Dim_Account(ID),
     CONSTRAINT FK_Fact_Transactions_DestinationAccount FOREIGN KEY (Destination_Account_ID) REFERENCES Dim_Account(ID),
@@ -114,11 +114,11 @@ CREATE TABLE Fact_Market_Asset_History (
 -- Fato: Notifications / Alerts
 CREATE TABLE Fact_Notifications (
     ID INT IDENTITY,
-    AppUser_ID INT NULL,
+    AppUser_ID INT NOT NULL,
     Time_ID INT NULL,
     Notification_Type VARCHAR(50) NULL,
     Channel VARCHAR(20) NULL,
-    Fact_Notifications_Status VARCHAR(20) NULL,
+    Fact_Notifications_Status VARCHAR(20) NOT NULL,
     CONSTRAINT PK_Fact_Notifications_ID PRIMARY KEY (ID),
     CONSTRAINT FK_Fact_Notifications_User FOREIGN KEY (AppUser_ID) REFERENCES AppUser(ID),
     CONSTRAINT FK_Fact_Notifications_Time FOREIGN KEY (Time_ID) REFERENCES Dim_Time(ID)
