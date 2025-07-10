@@ -118,7 +118,7 @@ CREATE TABLE Fact_Notifications (
     Time_ID INT NULL,
     Notification_Type VARCHAR(50) NULL,
     Channel VARCHAR(20) NULL,
-    Status VARCHAR(20) NULL,
+    Fact_Notifications_Status VARCHAR(20) NULL,
     CONSTRAINT PK_Fact_Notifications_ID PRIMARY KEY (ID),
     CONSTRAINT FK_Fact_Notifications_User FOREIGN KEY (AppUser_ID) REFERENCES AppUser(ID),
     CONSTRAINT FK_Fact_Notifications_Time FOREIGN KEY (Time_ID) REFERENCES Dim_Time(ID)
