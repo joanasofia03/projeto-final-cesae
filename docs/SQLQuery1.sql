@@ -82,7 +82,7 @@ CREATE TABLE Dim_Market_Asset (
 CREATE TABLE Fact_Transactions (
     ID INT IDENTITY,
     Source_Account_ID INT NOT NULL,
-    Destination_Account_ID INT NULL,
+    Destination_Account_ID INT NOT NULL,
     Time_ID INT NULL,
     Transaction_Type_ID INT NOT NULL,
     AppUser_ID INT NOT NULL,
