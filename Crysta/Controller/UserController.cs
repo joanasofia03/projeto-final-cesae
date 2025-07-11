@@ -122,4 +122,94 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    // PUT http://localhost:5146/api/users/update-user/{id}
+    [Authorize]
+    [HttpPut("update-user/{id}")]
+    public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateAppUserDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+            return Unauthorized();
+
+        var currentUserId = int.Parse(userId);
+        var isAdmin = User.IsInRole("Administrator");
+
+        if (currentUserId != id && !isAdmin)
+            return Forbid("You are not authorized to update this user.");
+
+        var user = await _context.AppUsers.FindAsync(id);
+        if (user == null || user.DeletedAt != null)
+            return NotFound("User not found.");
+
+        if (!string.IsNullOrWhiteSpace(dto.Email))
+            user.Email = dto.Email;
+
+        if (!string.IsNullOrWhiteSpace(dto.FullName))
+            user.FullName = dto.FullName;
+
+        if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
+            user.PhoneNumber = dto.PhoneNumber;
+
+        if (!string.IsNullOrWhiteSpace(dto.Region))
+            user.Region = dto.Region;
+
+        if (dto.BirthDate != null)
+            user.BirthDate = (DateTime)dto.BirthDate;
+
+        _context.AppUsers.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            message = "User updated successfully.",
+            user.ID,
+            user.Email,
+            user.FullName,
+            user.PhoneNumber,
+            user.Region,
+            user.BirthDate
+        });
+    }
+
+    // PUT http://localhost:5146/api/users/update-password/{id}
+    [Authorize]
+    [HttpPut("update-password/{id}")]
+    public async Task<IActionResult> UpdatePassword(int id, [FromBody] UpdatePasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+            return Unauthorized();
+
+        var currentUserId = int.Parse(userId);
+        var isAdmin = User.IsInRole("Administrator");
+
+        if (currentUserId != id && !isAdmin)
+            return Forbid("You are not authorized to change this user's password.");
+
+        var user = await _context.AppUsers.FindAsync(id);
+        if (user == null || user.DeletedAt != null)
+            return NotFound("User not found.");
+
+        if (!isAdmin)
+        {
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
+            if (result == PasswordVerificationResult.Failed)
+                return BadRequest("Current password is incorrect.");
+        }
+
+        user.PasswordHash = _passwordHasher.HashPassword(user, dto.NewPassword);
+
+        _context.AppUsers.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok("Password updated successfully.");
+    }
+
+
 }

@@ -26,3 +26,25 @@ public class Fact_Notifications
     [RegularExpression(@"^[A-Za-z\s_-]*$", ErrorMessage = "Status must contain only letters, spaces, underscores or hyphens.")]
     public string? Fact_Notifications_Status { get; set; }
 }
+
+/* var notification = new Fact_Notifications
+{
+    AppUser_ID = 1,
+    AppUser = new AppUser
+    {
+        // Assuming AppUser class has at least these properties
+        ID = 1,
+        UserName = "johndoe"
+    },
+    Time_ID = 20250711,
+    Time = new Dim_Time
+    {
+        // Assuming Dim_Time class has at least these properties
+        ID = 20250711,
+        Date = new DateTime(2025, 7, 11)
+    },
+    Notification_Type = "Password Reset",
+    Channel = "Email",
+    Fact_Notifications_Status = "Sent"
+}; */
+
