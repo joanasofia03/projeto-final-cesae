@@ -35,16 +35,10 @@ public class Fact_TransactionsController : ControllerBase
             .Include(t => t.AppUser)
             .Select(t => new ReadFactTransactionDto
             {
-                ID = t.ID,
-                Source_Account_ID = t.Source_Account_ID,
-                SourceAccountName = t.SourceAccount.Account_Type,
-                Destination_Account_ID = t.Destination_Account_ID,
-                DestinationAccountName = t.DestinationAccount != null ? t.DestinationAccount.Account_Type : null,
-                Time_ID = t.Time_ID,
+                SourceAccountName = t.SourceAccount.AppUser.FullName,
+                DestinationAccountName = t.DestinationAccount.AppUser.FullName,
                 TransactionDate = t.Time != null ? t.Time.date_Date : null,
-                Transaction_Type_ID = t.Transaction_Type_ID,
                 TransactionTypeName = t.TransactionType.Dim_Transaction_Type_Description,
-                AppUser_ID = t.AppUser_ID,
                 AppUserName = t.AppUser.FullName,
                 Transaction_Amount = t.Transaction_Amount,
                 Balance_After_Transaction = t.Balance_After_Transaction,
@@ -73,8 +67,8 @@ public class Fact_TransactionsController : ControllerBase
             .Include(t => t.AppUser)
             .Select(t => new ReadFactTransactionDto
             {
-                SourceAccountName = t.SourceAccount.Account_Type,
-                DestinationAccountName = t.DestinationAccount != null ? t.DestinationAccount.Account_Type : null,
+                SourceAccountName = t.SourceAccount.AppUser.FullName,
+                DestinationAccountName = t.DestinationAccount.AppUser.FullName,
                 TransactionDate = t.Time != null ? t.Time.date_Date : null,
                 TransactionTypeName = t.TransactionType.Dim_Transaction_Type_Description,
                 AppUserName = t.AppUser.FullName,
@@ -159,16 +153,10 @@ public class Fact_TransactionsController : ControllerBase
             .Include(t => t.AppUser)
             .Select(t => new ReadFactTransactionDto
             {
-                ID = t.ID,
-                Source_Account_ID = t.Source_Account_ID,
-                SourceAccountName = t.SourceAccount.Account_Type,
-                Destination_Account_ID = t.Destination_Account_ID,
-                DestinationAccountName = t.DestinationAccount != null ? t.DestinationAccount.Account_Type : null,
-                Time_ID = t.Time_ID,
+                SourceAccountName = t.SourceAccount.AppUser.FullName,
+                DestinationAccountName = t.DestinationAccount.AppUser.FullName,
                 TransactionDate = t.Time != null ? t.Time.date_Date : null,
-                Transaction_Type_ID = t.Transaction_Type_ID,
                 TransactionTypeName = t.TransactionType.Dim_Transaction_Type_Description,
-                AppUser_ID = t.AppUser_ID,
                 AppUserName = t.AppUser.FullName,
                 Transaction_Amount = t.Transaction_Amount,
                 Balance_After_Transaction = t.Balance_After_Transaction,
@@ -199,8 +187,8 @@ public class Fact_TransactionsController : ControllerBase
             .ToListAsync();
 
         var query = _context.Fact_Transactions
-            .Include(t => t.SourceAccount)
-            .Include(t => t.DestinationAccount)
+            .Include(t => t.SourceAccount).ThenInclude(a => a.AppUser)
+            .Include(t => t.DestinationAccount).ThenInclude(a => a.AppUser)
             .Include(t => t.Time)
             .Include(t => t.TransactionType)
             .Include(t => t.AppUser)
@@ -221,8 +209,8 @@ public class Fact_TransactionsController : ControllerBase
         var transactions = await query
             .Select(t => new ReadFactTransactionDto
             {
-                SourceAccountName = t.SourceAccount.Account_Type,
-                DestinationAccountName = t.DestinationAccount != null ? t.DestinationAccount.Account_Type : null,
+                SourceAccountName = t.SourceAccount.AppUser.FullName,
+                DestinationAccountName = t.DestinationAccount.AppUser.FullName,
                 TransactionDate = t.Time != null ? t.Time.date_Date : null,
                 TransactionTypeName = t.TransactionType.Dim_Transaction_Type_Description,
                 AppUserName = t.AppUser.FullName,
