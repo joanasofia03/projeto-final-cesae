@@ -10,10 +10,12 @@ using System.Security.Claims;
 public class Dim_AccountController : ControllerBase
 {
     private readonly AnalyticPlatformContext _context;
+    private readonly ITransactionService _transactionService;
 
-    public Dim_AccountController(AnalyticPlatformContext context)
+    public Dim_AccountController(AnalyticPlatformContext context, ITransactionService transactionService)
     {
         _context = context;
+        _transactionService = transactionService;
     }
 
     // GET: http://localhost:5146/api/dim_account/getall
@@ -135,15 +137,16 @@ public class Dim_AccountController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var adminRole = await _context.AppRoles.FirstOrDefaultAsync(r => r.RoleName == "Administrator");
-        if (adminRole == null)
-            return StatusCode(500, "Administrator role not found in the database.");
+        var account = await _context.Dim_Accounts.FindAsync(id);
+        if (account == null)
+            return NotFound("Account not found.");
 
-        var existing = await _context.Set<Dim_Account>().FindAsync(id);
-        if (existing == null)
-            return NotFound();
+        var balance = await _transactionService.GetAccountBalanceAsync(account.ID);
 
-        _context.Set<Dim_Account>().Remove(existing);
+        if (balance != 0)
+            return BadRequest($"Cannot delete account. Balance must be 0. Current balance: {balance}");
+
+        _context.Dim_Accounts.Remove(account);
         await _context.SaveChangesAsync();
 
         return NoContent();
@@ -170,32 +173,7 @@ public class Dim_AccountController : ControllerBase
 
         foreach (var account in accounts)
         {
-            var latestSourceTxn = await _context.Fact_Transactions
-                .Where(t => t.Source_Account_ID == account.ID)
-                .OrderByDescending(t => t.ID)
-                .FirstOrDefaultAsync();
-
-            decimal balance;
-
-            if (latestSourceTxn != null)
-            {
-                // Start with the known balance from last sent transaction
-                balance = latestSourceTxn.Balance_After_Transaction;
-
-                // Add any received funds after that transaction
-                var incomingAfterSource = await _context.Fact_Transactions
-                    .Where(t => t.Destination_Account_ID == account.ID && t.ID > latestSourceTxn.ID)
-                    .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
-
-                balance += incomingAfterSource;
-            }
-            else
-            {
-                // No outgoing transactions — calculate total received
-                balance = await _context.Fact_Transactions
-                    .Where(t => t.Destination_Account_ID == account.ID)
-                    .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
-            }
+            var balance = await _transactionService.GetAccountBalanceAsync(account.ID);
 
             accountBalances.Add(new
             {

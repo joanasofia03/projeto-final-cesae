@@ -15,6 +15,8 @@ if (_jwtSettings == null || string.IsNullOrEmpty(_jwtSettings.SecretKey))
     throw new Exception("JwtSettings is not configured properly. Please check your appsettings.json file.");
 }
 
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 builder.Services.AddDbContext<AnalyticPlatformContext>(options =>
     options.UseSqlServer(connectionString));
 
