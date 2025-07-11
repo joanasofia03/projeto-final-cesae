@@ -16,6 +16,7 @@ if (_jwtSettings == null || string.IsNullOrEmpty(_jwtSettings.SecretKey))
 }
 
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddDbContext<AnalyticPlatformContext>(options =>
     options.UseSqlServer(connectionString));
