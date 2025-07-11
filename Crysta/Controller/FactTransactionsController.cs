@@ -73,16 +73,10 @@ public class Fact_TransactionsController : ControllerBase
             .Include(t => t.AppUser)
             .Select(t => new ReadFactTransactionDto
             {
-                ID = t.ID,
-                Source_Account_ID = t.Source_Account_ID,
                 SourceAccountName = t.SourceAccount.Account_Type,
-                Destination_Account_ID = t.Destination_Account_ID,
                 DestinationAccountName = t.DestinationAccount != null ? t.DestinationAccount.Account_Type : null,
-                Time_ID = t.Time_ID,
                 TransactionDate = t.Time != null ? t.Time.date_Date : null,
-                Transaction_Type_ID = t.Transaction_Type_ID,
                 TransactionTypeName = t.TransactionType.Dim_Transaction_Type_Description,
-                AppUser_ID = t.AppUser_ID,
                 AppUserName = t.AppUser.FullName,
                 Transaction_Amount = t.Transaction_Amount,
                 Balance_After_Transaction = t.Balance_After_Transaction,
@@ -186,4 +180,67 @@ public class Fact_TransactionsController : ControllerBase
         return CreatedAtAction(nameof(GetMine), new { id = entity.ID }, createdDto);
     }
 
+    // GET: http://localhost:5146/api/fact_transactions/filter?from=2025-07-01&to=2025-07-11&type=1
+    // GET: http://localhost:5146/api/fact_transactions/filter?from=2025-07-10
+    // GET: http://localhost:5146/api/fact_transactions/filter?type=1
+    [HttpGet("filter")]
+    public async Task<IActionResult> FilterTransactions(
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to,
+        [FromQuery] int? type)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            return Unauthorized();
+
+        var userAccountIds = await _context.Dim_Accounts
+            .Where(a => a.AppUser_ID == userId)
+            .Select(a => a.ID)
+            .ToListAsync();
+
+        var query = _context.Fact_Transactions
+            .Include(t => t.SourceAccount)
+            .Include(t => t.DestinationAccount)
+            .Include(t => t.Time)
+            .Include(t => t.TransactionType)
+            .Include(t => t.AppUser)
+            .Where(t =>
+            userAccountIds.Contains(t.Source_Account_ID) ||
+            userAccountIds.Contains(t.Destination_Account_ID)
+        );
+
+        if (type.HasValue)
+            query = query.Where(t => t.Transaction_Type_ID == type.Value);
+
+        if (from.HasValue)
+            query = query.Where(t => t.Time != null && t.Time.date_Date.Date >= from.Value.Date);
+
+        if (to.HasValue)
+            query = query.Where(t => t.Time != null && t.Time.date_Date.Date <= to.Value.Date);
+
+        var transactions = await query
+            .Select(t => new ReadFactTransactionDto
+            {
+                SourceAccountName = t.SourceAccount.Account_Type,
+                DestinationAccountName = t.DestinationAccount != null ? t.DestinationAccount.Account_Type : null,
+                TransactionDate = t.Time != null ? t.Time.date_Date : null,
+                TransactionTypeName = t.TransactionType.Dim_Transaction_Type_Description,
+                AppUserName = t.AppUser.FullName,
+                Transaction_Amount = t.Transaction_Amount,
+                Balance_After_Transaction = t.Balance_After_Transaction,
+                Execution_Channel = t.Execution_Channel,
+                Transaction_Status = t.Transaction_Status
+            })
+            .ToListAsync();
+
+        if (!transactions.Any())
+        {
+            return NotFound(new
+            {
+                Message = "No transactions found matching the specified filters."
+            });
+        }
+
+        return Ok(transactions);
+    }
 }

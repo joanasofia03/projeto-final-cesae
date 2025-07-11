@@ -187,7 +187,7 @@ using (var scope = app.Services.CreateScope())
     // TIME SEED
     var today = DateTime.UtcNow;
     var timeEntry = context.Dim_Time.FirstOrDefault(t => t.date_Date == today);
-    if (timeEntry == null && account1 != null && account2 != null)
+    if (timeEntry == null)
     {
         timeEntry = new Dim_Time
         {
@@ -204,7 +204,7 @@ using (var scope = app.Services.CreateScope())
 
     var today2 = DateTime.UtcNow;
     var timeEntry2 = context.Dim_Time.FirstOrDefault(t => t.date_Date == today2);
-    if (timeEntry2 == null && account1 != null && account2 != null)
+    if (timeEntry2 == null)
     {
         timeEntry2 = new Dim_Time
         {
