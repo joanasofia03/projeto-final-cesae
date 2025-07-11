@@ -35,6 +35,8 @@ A aplicação tem como objetivo oferecer ao utilizador uma visão centralizada d
 
 ├── Models/
 
+├── Services/
+
 ├── appsettings.json
 
 ├── JwtSettings.cs
