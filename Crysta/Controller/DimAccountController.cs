@@ -11,11 +11,13 @@ public class Dim_AccountController : ControllerBase
 {
     private readonly AnalyticPlatformContext _context;
     private readonly ITransactionService _transactionService;
+    private readonly INotificationService _notificationService;
 
-    public Dim_AccountController(AnalyticPlatformContext context, ITransactionService transactionService)
+    public Dim_AccountController(AnalyticPlatformContext context, ITransactionService transactionService, INotificationService notificationService)
     {
         _context = context;
         _transactionService = transactionService;
+        _notificationService = notificationService;
     }
 
     // GET: http://localhost:5146/api/dim_account/getall
@@ -98,6 +100,14 @@ public class Dim_AccountController : ControllerBase
         _context.Dim_Accounts.Add(account);
         await _context.SaveChangesAsync();
 
+        await _notificationService.CreateNotificationAsync(
+            appUserId: userId,
+            notificationDate: DateTime.UtcNow,
+            notificationType: "Account Created",
+            channel: "API",
+            status: "Completed"
+        );
+
         return CreatedAtAction(nameof(GetById), new { id = account.ID }, account);
     }
 
@@ -126,6 +136,14 @@ public class Dim_AccountController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        await _notificationService.CreateNotificationAsync(
+            appUserId: userId,
+            notificationDate: DateTime.UtcNow,
+            notificationType: "Account Updated",
+            channel: "API",
+            status: "Completed"
+        );
+
         return NoContent();
     }
 
@@ -136,6 +154,12 @@ public class Dim_AccountController : ControllerBase
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        var userId = int.Parse(userIdClaim.Value);
 
         var account = await _context.Dim_Accounts.FindAsync(id);
         if (account == null)
@@ -148,6 +172,14 @@ public class Dim_AccountController : ControllerBase
 
         _context.Dim_Accounts.Remove(account);
         await _context.SaveChangesAsync();
+
+        await _notificationService.CreateNotificationAsync(
+            appUserId: userId,
+            notificationDate: DateTime.UtcNow,
+            notificationType: "Account Deleted",
+            channel: "API",
+            status: "Completed"
+        );
 
         return NoContent();
     }

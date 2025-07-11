@@ -10,11 +10,13 @@ public class UsersController : ControllerBase
 {
     private readonly AnalyticPlatformContext _context;
     private readonly PasswordHasher<AppUser> _passwordHasher;
+    private readonly INotificationService _notificationService;
 
-    public UsersController(AnalyticPlatformContext context)
+    public UsersController(AnalyticPlatformContext context, INotificationService notificationService)
     {
         _context = context;
         _passwordHasher = new PasswordHasher<AppUser>();
+        _notificationService = notificationService;
     }
 
     // POST http://localhost:5146/api/users/create-user
@@ -162,6 +164,14 @@ public class UsersController : ControllerBase
         _context.AppUsers.Update(user);
         await _context.SaveChangesAsync();
 
+        await _notificationService.CreateNotificationAsync(
+        appUserId: user.ID,
+        notificationDate: DateTime.UtcNow,
+        notificationType: "Account Information Updated",
+        channel: "API",
+        status: "Completed"
+        );
+
         return Ok(new
         {
             message = "User updated successfully.",
@@ -207,6 +217,14 @@ public class UsersController : ControllerBase
 
         _context.AppUsers.Update(user);
         await _context.SaveChangesAsync();
+
+        await _notificationService.CreateNotificationAsync(
+            appUserId: user.ID,
+            notificationDate: DateTime.UtcNow,
+            notificationType: "Password Change",
+            channel: "API",
+            status: "Completed"
+        );
 
         return Ok("Password updated successfully.");
     }

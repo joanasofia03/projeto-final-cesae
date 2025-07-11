@@ -15,7 +15,7 @@ public class Fact_NotificationsController : ControllerBase
     }
 
     // POST: http://localhost:5146/api/fact_notifications/create
-    [HttpPost("create")]  
+    [HttpPost("create")]
     [HttpPost]
     public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationDto dto)
     {
@@ -68,4 +68,27 @@ public class Fact_NotificationsController : ControllerBase
 
         return Ok(result);
     }
+    
+    // GET: http://localhost:5146/api/fact_notifications/my-notifications
+    [HttpGet("my-notifications")]
+    public async Task<IActionResult> GetMyNotifications()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+            return Unauthorized();
+
+        var notifications = await _notificationService.GetNotificationsByUserIdAsync(userId);
+
+        var result = notifications.Select(notification => new ReadNotificationDto
+        {
+            UserName = notification.AppUser?.FullName,
+            NotificationType = notification.Notification_Type,
+            Channel = notification.Channel,
+            Status = notification.Fact_Notifications_Status,
+            NotificationDate = notification.Time?.date_Date
+        }).ToList();
+
+        return Ok(result);
+    }
+
 }

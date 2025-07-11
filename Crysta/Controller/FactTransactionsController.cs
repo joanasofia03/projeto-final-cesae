@@ -9,10 +9,12 @@ using System.Security.Claims;
 public class Fact_TransactionsController : ControllerBase
 {
     private readonly AnalyticPlatformContext _context;
+    private readonly INotificationService _notificationService;
 
-    public Fact_TransactionsController(AnalyticPlatformContext context)
+    public Fact_TransactionsController(AnalyticPlatformContext context, INotificationService notificationService)
     {
         _context = context;
+        _notificationService = notificationService;
     }
 
     // GET: http://localhost:5146/api/fact_transactions/getall
@@ -143,6 +145,31 @@ public class Fact_TransactionsController : ControllerBase
 
         _context.Fact_Transactions.Add(entity);
         await _context.SaveChangesAsync();
+
+        var notificationDate = DateTime.UtcNow;
+
+        await _notificationService.CreateNotificationAsync(
+            appUserId: dto.AppUser_ID,
+            notificationDate: notificationDate,
+            notificationType: "Transaction Sent",
+            channel: dto.Execution_Channel ?? "API",
+            status: dto.Transaction_Status ?? "Processed"
+        );
+
+        var destinationAccount = await _context.Dim_Accounts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.ID == dto.Destination_Account_ID);
+
+        if (destinationAccount != null)
+        {
+            await _notificationService.CreateNotificationAsync(
+                appUserId: destinationAccount.AppUser_ID,
+                notificationDate: notificationDate,
+                notificationType: "Transaction Received",
+                channel: dto.Execution_Channel ?? "API",
+                status: dto.Transaction_Status ?? "Processed"
+            );
+        }
 
         var createdDto = await _context.Fact_Transactions
             .Where(t => t.ID == entity.ID)

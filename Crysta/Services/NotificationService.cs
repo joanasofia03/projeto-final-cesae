@@ -46,4 +46,14 @@ public class NotificationService : INotificationService
             .Include(n => n.AppUser)
             .FirstOrDefaultAsync(n => n.ID == id);
     }
+
+    public async Task<List<Fact_Notifications>> GetNotificationsByUserIdAsync(int appUserId)
+    {
+    return await _context.Fact_Notifications
+        .Include(n => n.Time)
+        .Include(n => n.AppUser)
+        .Where(n => n.AppUser_ID == appUserId)
+        .ToListAsync();
+    }
+
 }

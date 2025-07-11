@@ -89,6 +89,43 @@ using (var scope = app.Services.CreateScope())
     // PASSWORD HASHER
     var passwordHasher = new PasswordHasher<AppUser>();
 
+    // TIME SEED
+    if (!context.Dim_Time.Any(t => t.ID == 1))
+    {
+        var date1 = new DateTime(2024, 3, 15);
+
+        var timeEntry1 = new Dim_Time
+        {
+            date_Date = date1,
+            date_Year = date1.Year,
+            date_Month = date1.Month,
+            date_Quarter = (date1.Month - 1) / 3 + 1,
+            Weekday_Name = date1.DayOfWeek.ToString(),
+            Is_Weekend = date1.DayOfWeek == DayOfWeek.Saturday || date1.DayOfWeek == DayOfWeek.Sunday
+        };
+
+        context.Dim_Time.Add(timeEntry1);
+        context.SaveChanges();
+    }
+
+    if (!context.Dim_Time.Any(t => t.ID == 2))
+    {
+        var date2 = new DateTime(2024, 4, 22);
+
+        var timeEntry2 = new Dim_Time
+        {
+            date_Date = date2,
+            date_Year = date2.Year,
+            date_Month = date2.Month,
+            date_Quarter = (date2.Month - 1) / 3 + 1,
+            Weekday_Name = date2.DayOfWeek.ToString(),
+            Is_Weekend = date2.DayOfWeek == DayOfWeek.Saturday || date2.DayOfWeek == DayOfWeek.Sunday
+        };
+
+        context.Dim_Time.Add(timeEntry2);
+        context.SaveChanges();
+    }
+
     // CLIENT USERS SEED
     var client1 = context.AppUsers.FirstOrDefault(u => u.Email == "client1@domain.com");
     var client2 = context.AppUsers.FirstOrDefault(u => u.Email == "client2@domain.com");
@@ -173,6 +210,35 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 
+    // ACCOUNT CREATION NOTIFICATIONS SEED
+    if (!context.Fact_Notifications.Any(n =>
+        (n.AppUser_ID == client1.ID && n.Notification_Type == "Account Created") ||
+        (n.AppUser_ID == client2.ID && n.Notification_Type == "Account Created")))
+    {
+        
+        // Notification for Client1 account creation
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client1.ID,
+            Time_ID = 1, // Use appropriate existing or new time entry
+            Notification_Type = "Account Created",
+            Channel = "Seeder",
+            Fact_Notifications_Status = "Completed"
+        });
+
+        // Notification for Client2 account creation
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client2.ID,
+            Time_ID = 1,
+            Notification_Type = "Account Created",
+            Channel = "Seeder",
+            Fact_Notifications_Status = "Completed"
+        });
+
+        context.SaveChanges();
+    }
+
     // TRANSACTION TYPE SEED
     if (!context.Dim_Transaction_Types.Any(t => t.Dim_Transaction_Type_Description == "Transfer"))
     {
@@ -185,41 +251,6 @@ using (var scope = app.Services.CreateScope())
     var transferTypeId = context.Dim_Transaction_Types
         .First(t => t.Dim_Transaction_Type_Description == "Transfer").ID;
 
-    // TIME SEED
-    var today = DateTime.UtcNow;
-    var timeEntry = context.Dim_Time.FirstOrDefault(t => t.date_Date == today);
-    if (timeEntry == null)
-    {
-        timeEntry = new Dim_Time
-        {
-            date_Date = today,
-            date_Year = today.Year,
-            date_Month = today.Month,
-            date_Quarter = (today.Month - 1) / 3 + 1,
-            Weekday_Name = today.DayOfWeek.ToString(),
-            Is_Weekend = today.DayOfWeek == DayOfWeek.Saturday || today.DayOfWeek == DayOfWeek.Sunday
-        };
-        context.Dim_Time.Add(timeEntry);
-        context.SaveChanges();
-    }
-
-    var today2 = DateTime.UtcNow;
-    var timeEntry2 = context.Dim_Time.FirstOrDefault(t => t.date_Date == today2);
-    if (timeEntry2 == null)
-    {
-        timeEntry2 = new Dim_Time
-        {
-            date_Date = today2,
-            date_Year = today2.Year,
-            date_Month = today2.Month,
-            date_Quarter = (today2.Month - 1) / 3 + 1,
-            Weekday_Name = today2.DayOfWeek.ToString(),
-            Is_Weekend = today2.DayOfWeek == DayOfWeek.Saturday || today2.DayOfWeek == DayOfWeek.Sunday
-        };
-        context.Dim_Time.Add(timeEntry2);
-        context.SaveChanges();
-    }
-
     // TRANSACTIONS SEED
     if (!context.Fact_Transactions.Any(t => t.Source_Account_ID == account1.ID && t.Destination_Account_ID == account2.ID))
     {
@@ -228,7 +259,7 @@ using (var scope = app.Services.CreateScope())
         {
             Source_Account_ID = account1.ID,
             Destination_Account_ID = account2.ID,
-            Time_ID = timeEntry.ID,
+            Time_ID = 1,
             Transaction_Type_ID = transferTypeId,
             AppUser_ID = client1.ID,
             Transaction_Amount = 100m,
@@ -242,13 +273,60 @@ using (var scope = app.Services.CreateScope())
         {
             Source_Account_ID = account2.ID,
             Destination_Account_ID = account1.ID,
-            Time_ID = timeEntry2.ID,
+            Time_ID = 2,
             Transaction_Type_ID = transferTypeId,
             AppUser_ID = client2.ID,
             Transaction_Amount = 50m,
             Balance_After_Transaction = 950m, // Assume original was 1000, +100 -50 = 1050
             Execution_Channel = "WebPortal",
             Transaction_Status = "Completed"
+        });
+
+        context.SaveChanges();
+    }
+
+    // NOTIFICATIONS FOR TRANSACTIONS SEED
+    if (!context.Fact_Notifications.Any(n => n.Notification_Type == "Transaction Sent") && 
+        !context.Fact_Notifications.Any(n => n.Notification_Type == "Transaction Received"))
+    {
+        // Notification for Client1 sending money to Client2
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client1.ID,
+            Time_ID = 1,
+            Notification_Type = "Transaction Sent",
+            Channel = "MobileApp",
+            Fact_Notifications_Status = "Processed"
+        });
+
+        // Notification for Client2 receiving money from Client1
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client2.ID,
+            Time_ID = 1,
+            Notification_Type = "Transaction Received",
+            Channel = "MobileApp",
+            Fact_Notifications_Status = "Processed"
+        });
+
+        // Notification for Client2 sending money to Client1
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client2.ID,
+            Time_ID = 2,
+            Notification_Type = "Transaction Sent",
+            Channel = "WebPortal",
+            Fact_Notifications_Status = "Processed"
+        });
+
+        // Notification for Client1 receiving money from Client2
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client1.ID,
+            Time_ID = 2,
+            Notification_Type = "Transaction Received",
+            Channel = "WebPortal",
+            Fact_Notifications_Status = "Processed"
         });
 
         context.SaveChanges();
