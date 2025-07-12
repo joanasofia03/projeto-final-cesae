@@ -31,6 +31,8 @@ A aplicação tem como objetivo oferecer ao utilizador uma visão centralizada d
 
 ├── DTOs/
 
+├── Helpers/
+
 ├── Migrations/
 
 ├── Models/
