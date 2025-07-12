@@ -23,3 +23,15 @@ public class Fact_Market_Asset_History
     [Range(0, double.MaxValue, ErrorMessage = "Trading volume must be a non-negative value.")]
     public decimal? Trading_Volume { get; set; }
 }
+
+/* var marketAssetHistory = new Fact_Market_Asset_History
+{
+    ID = 1001,
+    Asset_ID = marketAsset.ID,
+    Asset = marketAsset,
+    Time_ID = time.ID,
+    Time = time,
+    Open_Price = 3100.25m,
+    Close_Price = 3205.75m,
+    Trading_Volume = 125000000.00m
+}; */

@@ -69,13 +69,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Admin seed
-
 using (var scope = app.Services.CreateScope())
 {
 
     var context = scope.ServiceProvider.GetRequiredService<AnalyticPlatformContext>();
     context.Database.Migrate();
+    await DataSeeder.SeedMarketAssetsFromCoinGecko(context);
 
     // CLIENT ROLE SEED
     if (!context.AppRoles.Any(r => r.RoleName == "Client"))
@@ -332,6 +331,7 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 
+    // ADMIN
     if (!context.AppRoles.Any(r => r.RoleName == "Administrator"))
     {
         var adminRoleEntry = context.AppRoles.Add(new AppRole

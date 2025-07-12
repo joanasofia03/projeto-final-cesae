@@ -31,3 +31,14 @@ public class Dim_Market_Asset
 
     public ICollection<Fact_Market_Asset_History>? MarketAssetHistories { get; set; }
 }
+
+/* var marketAsset = new Dim_Market_Asset
+{
+    ID = 1,
+    Asset_Name = "Bitcoin",
+    Asset_Type = "Cryptocurrency",
+    Symbol = "BTC",
+    Base_Currency = "USD",
+    API_Source = "https://api.coingecko.com/api/v3/coins/bitcoin",
+    MarketAssetHistories = new List<Fact_Market_Asset_History>
+}; */
