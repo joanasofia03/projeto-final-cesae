@@ -15,6 +15,7 @@ public class AnalyticPlatformContext : DbContext
     public DbSet<Fact_Transactions> Fact_Transactions { get; set; }
     public DbSet<Fact_Notifications> Fact_Notifications { get; set; }
     public DbSet<Dim_Market_Asset> Dim_Market_Asset { get; set; }
+    public DbSet<Fact_Market_Asset_History> Fact_Market_Asset_History { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

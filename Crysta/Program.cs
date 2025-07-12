@@ -74,7 +74,10 @@ using (var scope = app.Services.CreateScope())
 
     var context = scope.ServiceProvider.GetRequiredService<AnalyticPlatformContext>();
     context.Database.Migrate();
+
+    // MARKET ASSETS SEED
     await DataSeeder.SeedMarketAssetsFromCoinGecko(context);
+    var asset = context.Dim_Market_Asset.FirstOrDefault(a => a.Symbol == "BTC");
 
     // CLIENT ROLE SEED
     if (!context.AppRoles.Any(r => r.RoleName == "Client"))
@@ -214,7 +217,7 @@ using (var scope = app.Services.CreateScope())
         (n.AppUser_ID == client1.ID && n.Notification_Type == "Account Created") ||
         (n.AppUser_ID == client2.ID && n.Notification_Type == "Account Created")))
     {
-        
+
         // Notification for Client1 account creation
         context.Fact_Notifications.Add(new Fact_Notifications
         {
@@ -285,7 +288,7 @@ using (var scope = app.Services.CreateScope())
     }
 
     // NOTIFICATIONS FOR TRANSACTIONS SEED
-    if (!context.Fact_Notifications.Any(n => n.Notification_Type == "Transaction Sent") && 
+    if (!context.Fact_Notifications.Any(n => n.Notification_Type == "Transaction Sent") &&
         !context.Fact_Notifications.Any(n => n.Notification_Type == "Transaction Received"))
     {
         // Notification for Client1 sending money to Client2
@@ -401,6 +404,14 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
+        // MARKET ASSET HISTORY SEED
+    if (asset == null)
+    {
+        Console.WriteLine("Bitcoin asset not found. Seed the asset first.");
+        return;
+    }
+
+    await DataSeeder.SeedFactMarketAssetHistory(context);
     
 }
 
