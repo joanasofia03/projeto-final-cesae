@@ -15,6 +15,9 @@ if (_jwtSettings == null || string.IsNullOrEmpty(_jwtSettings.SecretKey))
     throw new Exception("JwtSettings is not configured properly. Please check your appsettings.json file.");
 }
 
+builder.Services.Configure<TransactionSettings>(
+    builder.Configuration.GetSection("TransactionSettings"));
+
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 

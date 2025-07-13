@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 [ApiController]
@@ -11,12 +12,14 @@ public class Fact_TransactionsController : ControllerBase
     private readonly AnalyticPlatformContext _context;
     private readonly INotificationService _notificationService;
     private readonly ITransactionService _transactionService;
+    private readonly TransactionSettings _transactionSettings;
 
-    public Fact_TransactionsController(AnalyticPlatformContext context, INotificationService notificationService, ITransactionService transactionService)
+    public Fact_TransactionsController(AnalyticPlatformContext context, INotificationService notificationService, ITransactionService transactionService, IOptions<TransactionSettings> transactionOptions)
     {
         _context = context;
         _notificationService = notificationService;
         _transactionService = transactionService;
+        _transactionSettings = transactionOptions.Value;
     }
 
     // GET: http://localhost:5146/api/fact_transactions/getall
@@ -188,6 +191,17 @@ public class Fact_TransactionsController : ControllerBase
                 notificationType: "Transaction Received",
                 channel: dto.Execution_Channel ?? "API",
                 status: dto.Transaction_Status ?? "Processed"
+            );
+        }
+
+        if (dto.Transaction_Amount >= _transactionSettings.HighValueThreshold)
+        {
+            await _notificationService.CreateNotificationAsync(
+                appUserId: userId,
+                notificationDate: notificationDate,
+                notificationType: "High-Value Transaction Alert",
+                channel: dto.Execution_Channel ?? "API",
+                status: "Flagged"
             );
         }
 
