@@ -10,11 +10,13 @@ public class Fact_TransactionsController : ControllerBase
 {
     private readonly AnalyticPlatformContext _context;
     private readonly INotificationService _notificationService;
+    private readonly ITransactionService _transactionService;
 
-    public Fact_TransactionsController(AnalyticPlatformContext context, INotificationService notificationService)
+    public Fact_TransactionsController(AnalyticPlatformContext context, INotificationService notificationService, ITransactionService transactionService)
     {
         _context = context;
         _notificationService = notificationService;
+        _transactionService = transactionService;
     }
 
     // GET: http://localhost:5146/api/fact_transactions/getall
@@ -115,6 +117,24 @@ public class Fact_TransactionsController : ControllerBase
         var transactionTypeExists = await _context.Dim_Transaction_Types.AnyAsync(t => t.ID == dto.Transaction_Type_ID);
         if (!transactionTypeExists)
             return BadRequest(new { Error = "Invalid Transaction_Type_ID", Message = "No Dim_Transaction_Type found with mentioned ID" });
+
+        var sourceAccount = await _context.Dim_Accounts
+            .FirstOrDefaultAsync(a => a.ID == dto.Source_Account_ID);
+
+        if (sourceAccount == null)
+            return BadRequest(new { Error = "Invalid Source_Account_ID", Message = "No Dim_Account found with mentioned ID" });
+
+        var currentBalance = await _transactionService.GetAccountBalanceAsync(sourceAccount.ID);
+
+        // DOESNT SUPPORT MULTI CURRENCY TRANSACTIONS
+        if (dto.Transaction_Amount > currentBalance)
+        {
+            return BadRequest(new
+            {
+                Error = "Insufficient Funds",
+                Message = $"Transaction amount ({dto.Transaction_Amount}) exceeds available balance ({currentBalance})."
+            });
+        }
 
         var now = DateTime.UtcNow;
         var dimTime = new Dim_Time
