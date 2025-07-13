@@ -11,65 +11,45 @@ public class TransactionService : ITransactionService
 
     public async Task<decimal> GetAccountBalanceAsync(int accountId)
     {
-        var latestSourceTxn = await _context.Fact_Transactions
-            .Where(t => t.Source_Account_ID == accountId)
-            .OrderByDescending(t => t.ID)
-            .FirstOrDefaultAsync();
+        var deposits = await _context.Fact_Transactions
+            .Where(t => t.Source_Account_ID == accountId && t.Destination_Account_ID == accountId)
+            .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
+        
+        var incoming = await _context.Fact_Transactions
+            .Where(t => t.Destination_Account_ID == accountId && t.Source_Account_ID != accountId)
+            .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
 
-        decimal balance;
+        var outgoing = await _context.Fact_Transactions
+            .Where(t => t.Source_Account_ID == accountId && t.Destination_Account_ID != accountId)
+            .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
 
-        if (latestSourceTxn != null)
-        {
-            balance = latestSourceTxn.Balance_After_Transaction;
-
-            var incomingAfter = await _context.Fact_Transactions
-                .Where(t => t.Destination_Account_ID == accountId && t.ID > latestSourceTxn.ID)
-                .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
-
-            balance += incomingAfter;
-        }
-        else
-        {
-            balance = await _context.Fact_Transactions
-                .Where(t => t.Destination_Account_ID == accountId)
-                .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
-        }
-
-        return balance;
+        return deposits + incoming - outgoing;
     }
 
     public async Task<decimal> GetBalanceAtAsync(int accountId, DateTime date)
     {
-        var latestSourceTxn = await _context.Fact_Transactions
-            .Where(t => t.Source_Account_ID == accountId && t.Time.date_Date <= date)
-            .OrderByDescending(t => t.Time.date_Date)
-            .ThenByDescending(t => t.ID)
-            .FirstOrDefaultAsync();
+        var deposits = await _context.Fact_Transactions
+            .Include(t => t.Time)
+            .Where(t => t.Source_Account_ID == accountId &&
+                        t.Destination_Account_ID == accountId &&
+                        t.Time.date_Date <= date)
+            .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
 
-        decimal balance;
+        var incoming = await _context.Fact_Transactions
+            .Include(t => t.Time)
+            .Where(t => t.Destination_Account_ID == accountId &&
+                        t.Source_Account_ID != accountId &&
+                        t.Time.date_Date <= date)
+            .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
 
-        if (latestSourceTxn != null)
-        {
-            balance = latestSourceTxn.Balance_After_Transaction;
+        var outgoing = await _context.Fact_Transactions
+            .Include(t => t.Time)
+            .Where(t => t.Source_Account_ID == accountId &&
+                        t.Destination_Account_ID != accountId &&
+                        t.Time.date_Date <= date)
+            .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
 
-            var incomingAfter = await _context.Fact_Transactions
-                .Include(t => t.Time)
-                .Where(t => t.Destination_Account_ID == accountId &&
-                            t.ID > latestSourceTxn.ID &&
-                            t.Time.date_Date <= date)
-                .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
-
-            balance += incomingAfter;
-        }
-        else
-        {
-            balance = await _context.Fact_Transactions
-                .Include(t => t.Time)
-                .Where(t => t.Destination_Account_ID == accountId && t.Time.date_Date <= date)
-                .SumAsync(t => (decimal?)t.Transaction_Amount) ?? 0;
-        }
-
-        return balance;
+        return deposits + incoming - outgoing;
     }
 
 }

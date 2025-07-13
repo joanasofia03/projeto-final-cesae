@@ -92,8 +92,8 @@ public class Dim_AccountController : ControllerBase
         {
             Account_Type = dto.Account_Type,
             Account_Status = dto.Account_Status,
-            AppUser_ID = userId, // LoggedUser
-            Opening_Date = dto.Opening_Date,
+            AppUser_ID = userId, // Logged user
+            Opening_Date = DateTime.UtcNow,
             Currency = dto.Currency
         };
 
@@ -126,13 +126,11 @@ public class Dim_AccountController : ControllerBase
 
         var userId = int.Parse(userIdClaim.Value);
 
-        if (existing.AppUser_ID != userId)
+        if (existing.AppUser_ID != userId && !User.IsInRole("Administrator"))
             return Forbid();
 
         existing.Account_Type = dto.Account_Type;
         existing.Account_Status = dto.Account_Status;
-        existing.Opening_Date = dto.Opening_Date;
-        existing.Currency = dto.Currency;
 
         await _context.SaveChangesAsync();
 

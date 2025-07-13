@@ -117,13 +117,41 @@ public class Fact_TransactionsController : ControllerBase
         if (!destAccountExists)
             return BadRequest(new { Error = "Invalid Destination_Account_ID", Message = "No Dim_Account found with mentioned ID" });
 
-        var transactionTypeExists = await _context.Dim_Transaction_Types.AnyAsync(t => t.ID == dto.Transaction_Type_ID);
-        if (!transactionTypeExists)
-            return BadRequest(new { Error = "Invalid Transaction_Type_ID", Message = "No Dim_Transaction_Type found with mentioned ID" });
-
         var sourceAccount = await _context.Dim_Accounts.FirstOrDefaultAsync(a => a.ID == dto.Source_Account_ID);
         if (sourceAccount == null)
             return BadRequest(new { Error = "Invalid Source_Account_ID", Message = "No Dim_Account found with mentioned ID" });
+
+        var transactionType = await _context.Dim_Transaction_Types
+            .FirstOrDefaultAsync(t => t.ID == dto.Transaction_Type_ID);
+
+        if (transactionType == null)
+        {
+            return BadRequest(new
+            {
+                Error = "Invalid Transaction_Type_ID",
+                Message = "No Dim_Transaction_Type found with mentioned ID"
+            });
+        }
+
+        bool isDeposit = transactionType.Dim_Transaction_Type_Description.Equals("Deposit", StringComparison.OrdinalIgnoreCase);
+
+        if (!isDeposit && dto.Source_Account_ID == dto.Destination_Account_ID)
+        {
+            return BadRequest(new
+            {
+                Error = "Invalid Transaction",
+                Message = "Source and destination accounts must be different for transfers or non-deposit transactions."
+            });
+        }
+
+        if (!isDeposit && !transactionType.Dim_Transaction_Type_Description.Equals("Transfer", StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new
+            {
+                Error = "Invalid Transaction_Type",
+                Message = "Only 'Transfer' type is allowed for non-deposit transactions with different accounts."
+            });
+        }
 
         var currentBalance = await _transactionService.GetAccountBalanceAsync(sourceAccount.ID);
 
@@ -291,4 +319,132 @@ public class Fact_TransactionsController : ControllerBase
 
         return Ok(transactions);
     }
+
+    // POST: http://localhost:5146/api/fact_transactions/deposit
+    [HttpPost("deposit")]
+    [Authorize(Roles = "Client")]
+    public async Task<IActionResult> Deposit([FromBody] FactTransactionCreateDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+            return Unauthorized();
+
+        if (dto.AppUser_ID != userId)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new
+            {
+                Error = "Forbidden",
+                Message = "You can only create deposits for yourself."
+            });
+        }
+
+        if (dto.Source_Account_ID != dto.Destination_Account_ID)
+        {
+            return BadRequest(new
+            {
+                Error = "Invalid Account IDs",
+                Message = "For a deposit, source and destination account IDs must be the same."
+            });
+        }
+
+        var account = await _context.Dim_Accounts.FirstOrDefaultAsync(a => a.ID == dto.Source_Account_ID && a.AppUser_ID == userId);
+        if (account == null)
+        {
+            return BadRequest(new
+            {
+                Error = "Invalid Account",
+                Message = "The specified account does not exist or does not belong to the authenticated user."
+            });
+        }
+
+        var depositType = await _context.Dim_Transaction_Types.FirstOrDefaultAsync(t => t.Dim_Transaction_Type_Description == "Deposit");
+        if (depositType == null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                Error = "Transaction Type Missing",
+                Message = "Transaction type 'Deposit' not found in the system."
+            });
+        }
+
+        var currentBalance = await _transactionService.GetAccountBalanceAsync(account.ID);
+        var newBalance = currentBalance + dto.Transaction_Amount;
+        Console.WriteLine($"Current Balance: {currentBalance}, New Balance: {newBalance}");
+
+        var now = DateTime.UtcNow;
+        var dimTime = new Dim_Time
+        {
+            date_Date = now,
+            date_Year = now.Year,
+            date_Month = now.Month,
+            date_Quarter = (now.Month - 1) / 3 + 1,
+            Weekday_Name = now.DayOfWeek.ToString(),
+            Is_Weekend = now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday
+        };
+
+        _context.Dim_Time.Add(dimTime);
+        await _context.SaveChangesAsync();
+
+        var deposit = new Fact_Transactions
+        {
+            Source_Account_ID = dto.Source_Account_ID,
+            Destination_Account_ID = dto.Destination_Account_ID,
+            Time_ID = dimTime.ID,
+            Transaction_Type_ID = depositType.ID,
+            AppUser_ID = userId,
+            Transaction_Amount = dto.Transaction_Amount,
+            Balance_After_Transaction = newBalance,
+            Execution_Channel = dto.Execution_Channel ?? "API",
+            Transaction_Status = dto.Transaction_Status ?? "Processed"
+        };
+
+        _context.Fact_Transactions.Add(deposit);
+        await _context.SaveChangesAsync();
+
+        await _notificationService.CreateNotificationAsync(
+            appUserId: userId,
+            notificationDate: now,
+            notificationType: "Deposit",
+            channel: deposit.Execution_Channel,
+            status: deposit.Transaction_Status
+        );
+
+        if (dto.Transaction_Amount >= _transactionSettings.HighValueThreshold)
+        {
+            await _notificationService.CreateNotificationAsync(
+                appUserId: userId,
+                notificationDate: now,
+                notificationType: "High-Value Transaction Alert",
+                channel: deposit.Execution_Channel,
+                status: "Flagged"
+            );
+        }
+
+        var createdDto = await _context.Fact_Transactions
+            .Where(t => t.ID == deposit.ID)
+            .Include(t => t.SourceAccount)
+            .Include(t => t.DestinationAccount)
+            .Include(t => t.Time)
+            .Include(t => t.TransactionType)
+            .Include(t => t.AppUser)
+            .Select(t => new ReadFactTransactionDto
+            {
+                SourceAccountName = t.SourceAccount.AppUser.FullName,
+                DestinationAccountName = t.DestinationAccount.AppUser.FullName,
+                TransactionDate = t.Time != null ? t.Time.date_Date : null,
+                TransactionTypeName = t.TransactionType.Dim_Transaction_Type_Description,
+                AppUserName = t.AppUser.FullName,
+                Transaction_Amount = t.Transaction_Amount,
+                Balance_After_Transaction = t.Balance_After_Transaction,
+                Execution_Channel = t.Execution_Channel,
+                Transaction_Status = t.Transaction_Status
+            })
+            .FirstOrDefaultAsync();
+
+        return CreatedAtAction(nameof(GetMine), new { id = deposit.ID }, createdDto);
+    }
+
 }

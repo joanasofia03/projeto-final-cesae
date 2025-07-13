@@ -50,7 +50,11 @@ public class AnalyticsController : ControllerBase
             return Unauthorized();
 
         var spending = await _context.Fact_Transactions
-            .Where(t => t.AppUser_ID == userId && t.Source_Account_ID != null)
+            .Where(t =>
+                t.AppUser_ID == userId &&
+                t.Source_Account_ID != null &&
+                t.Source_Account_ID != t.Destination_Account_ID
+            )
             .Include(t => t.Time)
             .ToListAsync();
 

@@ -14,13 +14,4 @@ public class UpdateDimAccountDto
     public string? Account_Status { get; set; }
 
     public int? AppUser_ID { get; set; }
-
-    [Required(ErrorMessage = "Opening date is required.")]
-    [DataType(DataType.Date)]
-    public DateTime? Opening_Date { get; set; }
-
-    [Required(ErrorMessage = "Currency is required.")]
-    [StringLength(10)]
-    [RegularExpression(@"^[A-Z]{3,10}$", ErrorMessage = "Currency should be in uppercase and between 3 to 10 characters.")]
-    public string? Currency { get; set; }
 }

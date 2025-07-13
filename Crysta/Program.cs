@@ -82,6 +82,9 @@ using (var scope = app.Services.CreateScope())
     await DataSeeder.SeedMarketAssetsFromCoinGecko(context);
     var asset = context.Dim_Market_Asset.FirstOrDefault(a => a.Symbol == "BTC");
 
+    // MARKET ASSET HISTORY SEED
+    await DataSeeder.SeedFactMarketAssetHistory(context);
+
     // CLIENT ROLE SEED
     if (!context.AppRoles.Any(r => r.RoleName == "Client"))
     {
@@ -195,7 +198,7 @@ using (var scope = app.Services.CreateScope())
             Account_Status = "Active",
             AppUser_ID = client1.ID,
             Opening_Date = DateTime.UtcNow.Date,
-            Currency = "EUR"
+            Currency = "USD"
         };
         context.Dim_Accounts.Add(account1);
         context.SaveChanges();
@@ -209,7 +212,7 @@ using (var scope = app.Services.CreateScope())
             Account_Status = "Active",
             AppUser_ID = client2.ID,
             Opening_Date = DateTime.UtcNow.Date,
-            Currency = "EUR"
+            Currency = "USD"
         };
         context.Dim_Accounts.Add(account2);
         context.SaveChanges();
@@ -256,33 +259,72 @@ using (var scope = app.Services.CreateScope())
     var transferTypeId = context.Dim_Transaction_Types
         .First(t => t.Dim_Transaction_Type_Description == "Transfer").ID;
 
+     if (!context.Dim_Transaction_Types.Any(t => t.Dim_Transaction_Type_Description == "Deposit"))
+    {
+        context.Dim_Transaction_Types.Add(new Dim_Transaction_Type
+        {
+            Dim_Transaction_Type_Description = "Deposit"
+        });
+        context.SaveChanges();
+    }
+    var depositTypeId = context.Dim_Transaction_Types
+        .First(t => t.Dim_Transaction_Type_Description == "Deposit").ID;
+
     // TRANSACTIONS SEED
     if (!context.Fact_Transactions.Any(t => t.Source_Account_ID == account1.ID && t.Destination_Account_ID == account2.ID))
     {
-        // Transaction 1: Client1 sends 100 EUR to Client2
+        // Transaction 1: Client1 deposits 1000 USD
         context.Fact_Transactions.Add(new Fact_Transactions
         {
             Source_Account_ID = account1.ID,
-            Destination_Account_ID = account2.ID,
+            Destination_Account_ID = account1.ID, // Deposit to self
             Time_ID = 1,
-            Transaction_Type_ID = transferTypeId,
+            Transaction_Type_ID = depositTypeId,
             AppUser_ID = client1.ID,
-            Transaction_Amount = 100m,
-            Balance_After_Transaction = 900m, // Assume original balance was 1000
+            Transaction_Amount = 1000m,
+            Balance_After_Transaction = 1000m, // Assume initial balance was 0
             Execution_Channel = "MobileApp",
             Transaction_Status = "Completed"
         });
 
-        // Transaction 2: Client2 sends 50 EUR back to Client1
+        // Transaction 2: Client2 deposits 1100 USD
+        context.Fact_Transactions.Add(new Fact_Transactions
+        {
+            Source_Account_ID = account2.ID,
+            Destination_Account_ID = account2.ID, // Deposit to self
+            Time_ID = 2,
+            Transaction_Type_ID = depositTypeId,
+            AppUser_ID = client2.ID,
+            Transaction_Amount = 1100m,
+            Balance_After_Transaction = 1100m, // Assume initial balance was 0
+            Execution_Channel = "WebPortal",
+            Transaction_Status = "Completed"
+        });
+
+        // Transaction 3: Client1 transfers 200 USD to Client2
+        context.Fact_Transactions.Add(new Fact_Transactions
+        {
+            Source_Account_ID = account1.ID,
+            Destination_Account_ID = account2.ID,
+            Time_ID = 3,
+            Transaction_Type_ID = transferTypeId,
+            AppUser_ID = client1.ID,
+            Transaction_Amount = 200m,
+            Balance_After_Transaction = 800m, // After transfer
+            Execution_Channel = "MobileApp",
+            Transaction_Status = "Completed"
+        });
+
+        // Transaction 4: Client2 transfers 300 USD to Client1
         context.Fact_Transactions.Add(new Fact_Transactions
         {
             Source_Account_ID = account2.ID,
             Destination_Account_ID = account1.ID,
-            Time_ID = 2,
+            Time_ID = 4,
             Transaction_Type_ID = transferTypeId,
             AppUser_ID = client2.ID,
-            Transaction_Amount = 50m,
-            Balance_After_Transaction = 1050m, // Assume original balance was 1100
+            Transaction_Amount = 300m,
+            Balance_After_Transaction = 1400m, // After transfer
             Execution_Channel = "WebPortal",
             Transaction_Status = "Completed"
         });
@@ -294,11 +336,32 @@ using (var scope = app.Services.CreateScope())
     if (!context.Fact_Notifications.Any(n => n.Notification_Type == "Transaction Sent") &&
         !context.Fact_Notifications.Any(n => n.Notification_Type == "Transaction Received"))
     {
-        // Notification for Client1 sending money to Client2
+
+        // Notification for Client1 depositing money
         context.Fact_Notifications.Add(new Fact_Notifications
         {
             AppUser_ID = client1.ID,
             Time_ID = 1,
+            Notification_Type = "Transaction Sent",
+            Channel = "MobileApp",
+            Fact_Notifications_Status = "Processed"
+        });
+
+        // Notification for Client2 depositing money
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client2.ID,
+            Time_ID = 2,
+            Notification_Type = "Transaction Sent",
+            Channel = "WebPortal",
+            Fact_Notifications_Status = "Processed"
+        });
+        
+        // Notification for Client1 sending money to Client2
+        context.Fact_Notifications.Add(new Fact_Notifications
+        {
+            AppUser_ID = client1.ID,
+            Time_ID = 3,
             Notification_Type = "Transaction Sent",
             Channel = "MobileApp",
             Fact_Notifications_Status = "Processed"
@@ -308,7 +371,7 @@ using (var scope = app.Services.CreateScope())
         context.Fact_Notifications.Add(new Fact_Notifications
         {
             AppUser_ID = client2.ID,
-            Time_ID = 1,
+            Time_ID = 3,
             Notification_Type = "Transaction Received",
             Channel = "MobileApp",
             Fact_Notifications_Status = "Processed"
@@ -318,7 +381,7 @@ using (var scope = app.Services.CreateScope())
         context.Fact_Notifications.Add(new Fact_Notifications
         {
             AppUser_ID = client2.ID,
-            Time_ID = 2,
+            Time_ID = 4,
             Notification_Type = "Transaction Sent",
             Channel = "WebPortal",
             Fact_Notifications_Status = "Processed"
@@ -328,7 +391,7 @@ using (var scope = app.Services.CreateScope())
         context.Fact_Notifications.Add(new Fact_Notifications
         {
             AppUser_ID = client1.ID,
-            Time_ID = 2,
+            Time_ID = 4,
             Notification_Type = "Transaction Received",
             Channel = "WebPortal",
             Fact_Notifications_Status = "Processed"
@@ -414,8 +477,6 @@ using (var scope = app.Services.CreateScope())
         return;
     }
 
-    await DataSeeder.SeedFactMarketAssetHistory(context);
-    
 }
 
 app.Run();
