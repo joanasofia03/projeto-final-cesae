@@ -121,15 +121,12 @@ public class Fact_TransactionsController : ControllerBase
         if (!transactionTypeExists)
             return BadRequest(new { Error = "Invalid Transaction_Type_ID", Message = "No Dim_Transaction_Type found with mentioned ID" });
 
-        var sourceAccount = await _context.Dim_Accounts
-            .FirstOrDefaultAsync(a => a.ID == dto.Source_Account_ID);
-
+        var sourceAccount = await _context.Dim_Accounts.FirstOrDefaultAsync(a => a.ID == dto.Source_Account_ID);
         if (sourceAccount == null)
             return BadRequest(new { Error = "Invalid Source_Account_ID", Message = "No Dim_Account found with mentioned ID" });
 
         var currentBalance = await _transactionService.GetAccountBalanceAsync(sourceAccount.ID);
 
-        // DOESNT SUPPORT MULTI CURRENCY TRANSACTIONS
         if (dto.Transaction_Amount > currentBalance)
         {
             return BadRequest(new
@@ -153,6 +150,8 @@ public class Fact_TransactionsController : ControllerBase
         _context.Dim_Time.Add(dimTime);
         await _context.SaveChangesAsync();
 
+        var newBalance = currentBalance - dto.Transaction_Amount;
+
         var entity = new Fact_Transactions
         {
             Source_Account_ID = dto.Source_Account_ID,
@@ -161,7 +160,7 @@ public class Fact_TransactionsController : ControllerBase
             Transaction_Type_ID = dto.Transaction_Type_ID,
             AppUser_ID = userId,
             Transaction_Amount = dto.Transaction_Amount,
-            Balance_After_Transaction = dto.Balance_After_Transaction,
+            Balance_After_Transaction = newBalance,
             Execution_Channel = dto.Execution_Channel,
             Transaction_Status = dto.Transaction_Status
         };
