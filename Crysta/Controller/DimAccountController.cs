@@ -186,6 +186,7 @@ public class Dim_AccountController : ControllerBase
 
     // GET: http://localhost:5146/api/dim_account/my-balance
     [HttpGet("my-balance")]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> GetMyBalance()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

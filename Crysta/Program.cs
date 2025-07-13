@@ -282,7 +282,7 @@ using (var scope = app.Services.CreateScope())
             Transaction_Type_ID = transferTypeId,
             AppUser_ID = client2.ID,
             Transaction_Amount = 50m,
-            Balance_After_Transaction = 950m, // Assume original was 1000, +100 -50 = 1050
+            Balance_After_Transaction = 1050m, // Assume original balance was 1100
             Execution_Channel = "WebPortal",
             Transaction_Status = "Completed"
         });
