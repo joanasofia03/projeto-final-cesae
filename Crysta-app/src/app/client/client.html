@@ -2,7 +2,7 @@
 <h1>Client Dashboard</h1>
 
 <div *ngIf="balances.length > 0; else noAccounts">
-    <h2>Your Accounts</h2>
+  <h2>Your Accounts</h2>
   <div *ngFor="let acc of balances" class="account-card">
     <p><strong>Account ID:</strong> {{ acc.accountId }}</p>
     <p><strong>Type:</strong> {{ acc.accountType }}</p>
@@ -13,4 +13,25 @@
 
 <ng-template #noAccounts>
   <p>No accounts found.</p>
+</ng-template>
+
+<hr />
+
+<div *ngIf="transactions.length > 0; else noTransactions">
+  <h2>Your Transactions</h2>
+
+  <div *ngFor="let tx of transactions" class="transaction-card">
+    <p><strong>Source Account:</strong> {{ tx.sourceAccountName }}</p>
+    <p><strong>Destination Account:</strong> {{ tx.destinationAccountName }}</p>
+    <p><strong>Date:</strong> {{ tx.transactionDate | date:'shortDate' }}</p>
+    <p><strong>Type:</strong> {{ tx.transactionTypeName }}</p>
+    <p><strong>Amount:</strong> {{ tx.transaction_Amount | currency }}</p>
+    <p><strong>Balance After Transaction:</strong> {{ tx.balance_After_Transaction | currency }}</p>
+    <p><strong>Execution Channel:</strong> {{ tx.execution_Channel }}</p>
+    <p><strong>Status:</strong> {{ tx.transaction_Status }}</p>
+  </div>
+</div>
+
+<ng-template #noTransactions>
+  <p>No transactions found.</p>
 </ng-template>
