@@ -1,1 +1,16 @@
 <p>client works!</p>
+<h1>Client Dashboard</h1>
+
+<div *ngIf="balances.length > 0; else noAccounts">
+    <h2>Your Accounts</h2>
+  <div *ngFor="let acc of balances" class="account-card">
+    <p><strong>Account ID:</strong> {{ acc.accountId }}</p>
+    <p><strong>Type:</strong> {{ acc.accountType }}</p>
+    <p><strong>Currency:</strong> {{ acc.currency }}</p>
+    <p><strong>Balance:</strong> {{ acc.balance }}</p>
+  </div>
+</div>
+
+<ng-template #noAccounts>
+  <p>No accounts found.</p>
+</ng-template>

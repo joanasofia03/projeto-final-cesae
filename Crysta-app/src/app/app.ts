@@ -15,7 +15,6 @@ export class AppComponent {
   constructor(private router: Router) {}
 
   goToLogin() {
-    console.log('Button clicked!');
-    this.router.navigate(['/login']); // or use '/login' if your login route is configured that way
+    this.router.navigate(['/login']);
   }
 }
