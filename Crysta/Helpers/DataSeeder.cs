@@ -49,7 +49,7 @@ public static class DataSeeder
             Asset_Type = "Cryptocurrency",
             Symbol = bitcoin.symbol.ToUpper(),
             Base_Currency = "USD",
-            API_Source = $"https://api.coingecko.com/api/v3/coins/{bitcoin.id}"
+            API_Source = $"https://min-api.cryptocompare.com/data/v2/histoday?fsym={bitcoin.symbol.ToUpper()}&tsym=USD"
         };
 
         context.Dim_Market_Asset.Add(newAsset);

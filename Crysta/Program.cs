@@ -342,7 +342,7 @@ using (var scope = app.Services.CreateScope())
         {
             AppUser_ID = client1.ID,
             Time_ID = 1,
-            Notification_Type = "Transaction Sent",
+            Notification_Type = "Deposit Sent",
             Channel = "MobileApp",
             Fact_Notifications_Status = "Processed"
         });
@@ -352,7 +352,7 @@ using (var scope = app.Services.CreateScope())
         {
             AppUser_ID = client2.ID,
             Time_ID = 2,
-            Notification_Type = "Transaction Sent",
+            Notification_Type = "Deposit Sent",
             Channel = "WebPortal",
             Fact_Notifications_Status = "Processed"
         });
