@@ -13,19 +13,21 @@ import { HttpClientModule } from '@angular/common/http';
 export class ClientComponent implements OnInit {
   balances: any[] = [];
   transactions: any[] = [];
+  notifications: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     console.log('ngOnInit called');
     this.loadBalances();
     this.loadTransactions();
+    this.loadNotifications();
   }
 
   loadBalances() {
     this.http.get<any[]>('http://localhost:5146/api/dim_account/my-balance')
       .subscribe({
-        next: data => this.balances = data,
+        next: data => { console.log('Balances loaded:', data); this.balances = data; },
         error: err => console.error('Failed to load balances:', err)
       });
   }
@@ -39,6 +41,17 @@ export class ClientComponent implements OnInit {
           this.transactions = data;
         },
         error: err => console.error('Failed to load transactions:', err)
+      });
+  }
+
+  loadNotifications() {
+    this.http.get<any[]>('http://localhost:5146/api/fact_notifications/my-notifications')
+      .subscribe({
+        next: data => {
+          console.log('Notifications loaded:', data);
+          this.notifications = data;
+        },
+        error: err => console.error('Failed to load notifications:', err)
       });
   }
 }

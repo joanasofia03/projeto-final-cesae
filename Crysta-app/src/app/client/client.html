@@ -35,3 +35,28 @@
 <ng-template #noTransactions>
   <p>No transactions found.</p>
 </ng-template>
+
+<!-- === NOTIFICATIONS SECTION === -->
+<div *ngIf="notifications.length > 0; else noNotifications">
+  <h2>Your Notifications</h2>
+
+  <div *ngFor="let note of notifications" class="notification-card">
+    <div class="notification-row">
+      <p><strong>User:</strong> {{ note.userName }}</p>
+      <p><strong>Type:</strong> {{ note.notificationType }}</p>
+    </div>
+
+    <div class="notification-row">
+      <p><strong>Channel:</strong> {{ note.channel }}</p>
+      <p><strong>Status:</strong> {{ note.status }}</p>
+    </div>
+
+    <div class="notification-row">
+      <p><strong>Date:</strong> {{ note.notificationDate | date: 'shortDate' }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #noNotifications>
+  <p>No notifications found.</p>
+</ng-template>
