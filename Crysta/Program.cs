@@ -26,6 +26,18 @@ builder.Services.AddDbContext<AnalyticPlatformContext>(options =>
 
 builder.Services.AddControllers();
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 builder.Services.AddAuthentication("Bearer")
@@ -259,7 +271,7 @@ using (var scope = app.Services.CreateScope())
     var transferTypeId = context.Dim_Transaction_Types
         .First(t => t.Dim_Transaction_Type_Description == "Transfer").ID;
 
-     if (!context.Dim_Transaction_Types.Any(t => t.Dim_Transaction_Type_Description == "Deposit"))
+    if (!context.Dim_Transaction_Types.Any(t => t.Dim_Transaction_Type_Description == "Deposit"))
     {
         context.Dim_Transaction_Types.Add(new Dim_Transaction_Type
         {
@@ -356,7 +368,7 @@ using (var scope = app.Services.CreateScope())
             Channel = "WebPortal",
             Fact_Notifications_Status = "Processed"
         });
-        
+
         // Notification for Client1 sending money to Client2
         context.Fact_Notifications.Add(new Fact_Notifications
         {
@@ -470,7 +482,7 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
-        // MARKET ASSET HISTORY SEED
+    // MARKET ASSET HISTORY SEED
     if (asset == null)
     {
         Console.WriteLine("Bitcoin asset not found. Seed the asset first.");
@@ -478,5 +490,5 @@ using (var scope = app.Services.CreateScope())
     }
 
 }
-
+app.UseCors("AllowAngularApp"); // Add this before UseAuthorization, UseEndpoints, etc.
 app.Run();
