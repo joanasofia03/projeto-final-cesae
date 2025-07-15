@@ -32,3 +32,11 @@
   padding: 0 0.5rem;
   font-size: 0.95rem;
 }
+
+.total-balance-section {
+  padding: 10px;
+  background-color: #eef5ff;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
