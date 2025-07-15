@@ -120,6 +120,15 @@ public class Fact_TransactionsController : ControllerBase
         var sourceAccount = await _context.Dim_Accounts.FirstOrDefaultAsync(a => a.ID == dto.Source_Account_ID);
         if (sourceAccount == null)
             return BadRequest(new { Error = "Invalid Source_Account_ID", Message = "No Dim_Account found with mentioned ID" });
+        // verify if source account is active
+        if (sourceAccount.Account_Status != "Active")
+        {
+            return BadRequest(new
+            {
+                Error = "Inactive Account",
+                Message = "Cannot perform transactions on an inactive account."
+            });
+        }
 
         var transactionType = await _context.Dim_Transaction_Types
             .FirstOrDefaultAsync(t => t.ID == dto.Transaction_Type_ID);
@@ -209,6 +218,15 @@ public class Fact_TransactionsController : ControllerBase
         var destinationAccount = await _context.Dim_Accounts
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.ID == dto.Destination_Account_ID);
+
+        if(destinationAccount != null && destinationAccount.Account_Status != "Active")
+        {
+            return BadRequest(new
+            {
+                Error = "Inactive Destination Account",
+                Message = "Cannot send transactions to an inactive destination account."
+            });
+        }
 
         if (destinationAccount != null)
         {
@@ -357,6 +375,15 @@ public class Fact_TransactionsController : ControllerBase
             {
                 Error = "Invalid Account",
                 Message = "The specified account does not exist or does not belong to the authenticated user."
+            });
+        }
+
+        if (account.Account_Status != "Active")
+        {
+            return BadRequest(new
+            {
+                Error = "Inactive Account",
+                Message = "Cannot deposit to an inactive account."
             });
         }
 
