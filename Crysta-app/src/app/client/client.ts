@@ -33,6 +33,17 @@ export class ClientComponent implements OnInit {
   channel: 'Web',
   status: 'Processed'
   };
+  filters = {
+  from: '',
+  to: '',
+  type: null
+  };
+  transactionTypes = [
+  { id: 1, label: 'Transfer' },
+  { id: 2, label: 'Deposit' }
+  ];
+  transactionError: string | null = null;
+
 
   constructor(private http: HttpClient) { }
 
@@ -174,4 +185,42 @@ makeTransaction() {
         alert(`Deposit failed: ${backendError} - ${backendMessage}`);
       }
     });
-  }  }
+
+    
+  }
+  
+  filterTransactions() {
+  const params: any = {};
+
+  if (this.filters.from) params.from = this.filters.from;
+  if (this.filters.to) params.to = this.filters.to;
+  if (this.filters.type) params.type = this.filters.type;
+
+  this.http.get<any[]>('http://localhost:5146/api/fact_transactions/filter', { params })
+    .subscribe({
+      next: (data) => {
+        this.transactions = data;
+        this.transactionError = null; // clear old error if any
+      },
+      error: (err) => {
+        if ( err.error?.message) {
+          this.transactionError = err.error.message;
+          alert(`${this.transactionError}`);
+        } else {
+          this.transactionError = 'An unexpected error occurred.';
+          alert('An unexpected error occurred while filtering transactions.');
+        }
+        this.transactions = [];
+      }
+    });
+}
+
+
+resetFilters() {
+  this.filters = { from: '', to: '', type: null };
+  this.loadTransactions();
+}
+
+  }
+
+  

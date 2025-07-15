@@ -92,3 +92,24 @@
 
   <button type="submit" [disabled]="!transactionForm.form.valid">Transfer</button>
 </form>
+
+<h2>Filter Transactions</h2>
+<form (ngSubmit)="filterTransactions()" #filterForm="ngForm">
+  <label for="from">From:</label>
+  <input type="date" [(ngModel)]="filters.from" name="from" />
+
+  <label for="to">To:</label>
+  <input type="date" [(ngModel)]="filters.to" name="to" />
+
+  <select [(ngModel)]="filters.type" name="type">
+    <option [ngValue]="null">-- All Types --</option>
+    <option *ngFor="let type of transactionTypes" [value]="type.id">
+      {{ type.label }}
+    </option>
+  </select>
+
+  <button type="submit">Apply Filter</button>
+  <button type="button" (click)="resetFilters()">Reset</button>
+
+
+</form>
