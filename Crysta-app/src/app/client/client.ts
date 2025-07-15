@@ -26,6 +26,13 @@ export class ClientComponent implements OnInit {
   channel: 'Web',
   status: 'Processed',
   };
+  transaction = {
+  sourceAccountId: null,
+  destinationAccountId: null,
+  amount: null,
+  channel: 'Web',
+  status: 'Processed'
+  };
 
   constructor(private http: HttpClient) { }
 
@@ -108,8 +115,63 @@ export class ClientComponent implements OnInit {
         alert('Deposit failed: ' + (err.error?.Message || 'Unknown error'));
       }
     });
+
+    
 }
 
+makeTransaction() {
+  if (
+    !this.transaction.sourceAccountId ||
+    !this.transaction.destinationAccountId ||
+    !this.transaction.amount ||
+    this.transaction.amount <= 0
+  ) {
+    alert("Please fill all fields and enter a valid amount.");
+    return;
+  }
 
-  
-}
+  if (this.transaction.sourceAccountId === this.transaction.destinationAccountId) {
+    alert("Source and destination accounts must be different.");
+    return;
+  }
+
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    alert("User is not authenticated.");
+    return;
+  }
+
+  const decoded = jwtDecode<JwtPayload>(token);
+  const userId = parseInt(decoded.nameid, 10);
+  if (isNaN(userId)) {
+    alert("Invalid user ID in token.");
+    return;
+  }
+
+  const transferDto = {
+    AppUser_ID: userId,
+    Source_Account_ID: this.transaction.sourceAccountId,
+    Destination_Account_ID: this.transaction.destinationAccountId,
+    Transaction_Amount: this.transaction.amount,
+    Execution_Channel: this.transaction.channel,
+    Transaction_Status: this.transaction.status,
+    Transaction_Type_ID: 2
+  };
+
+  this.http.post('http://localhost:5146/api/fact_transactions/create-transaction', transferDto)
+    .subscribe({
+      next: (res) => {
+        alert('Transaction successful!');
+        this.loadBalances();
+        this.loadTransactions();
+      },
+      error: (err) => {
+        console.error('Deposit failed', err);
+
+        const backendError = err.error?.error || 'Unknown Error';
+        const backendMessage = err.error?.message || 'An unknown error occurred.';
+
+        alert(`Deposit failed: ${backendError} - ${backendMessage}`);
+      }
+    });
+  }  }
