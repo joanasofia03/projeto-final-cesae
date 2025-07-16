@@ -120,6 +120,9 @@ public class UsersController : ControllerBase
         {
             FullName = user.FullName ?? string.Empty,
             Email = user.Email,
+            PhoneNumber = user.PhoneNumber ?? string.Empty,
+            DocumentId = user.DocumentId ?? string.Empty,
+            BirthDate = user.BirthDate,
             Roles = roles,
             Token = ""
         };

@@ -1,6 +1,20 @@
 <p>client works!</p>
 <h1>Client Dashboard</h1>
 
+<div *ngIf="userInfo; else loadingUser">
+  <h2>Welcome, {{ userInfo.fullName }}</h2>
+  <p><strong>Email:</strong> {{ userInfo.email }}</p>
+  <p><strong>Phone:</strong> {{ userInfo.phoneNumber }}</p>
+  <p><strong>Document ID:</strong> {{ userInfo.documentId }}</p>
+  <p><strong>Birth Date:</strong> {{ userInfo.birthDate | date }}</p>
+  <p><strong>Role:</strong> {{ userInfo.roles.join(', ') }}</p>
+</div>
+
+<ng-template #loadingUser>
+  <p *ngIf="userError">{{ userError }}</p>
+  <p *ngIf="!userError">Loading user information...</p>
+</ng-template>
+
 <div class="total-balance-section">
   <h2>Your Total Balance</h2>
 

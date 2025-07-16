@@ -42,6 +42,7 @@ export class ClientComponent implements OnInit {
     { id: 1, label: 'Transfer' },
     { id: 2, label: 'Deposit' }
   ];
+  userInfo: any = null;
   balanceEvolution: { date: string; balance: number }[] = [];
   transactionError: string | null = null;
   totalBalance: number | null = null;
@@ -49,11 +50,20 @@ export class ClientComponent implements OnInit {
   averageSpending: number | null = null;
   monthlyBreakdown: any[] = [];
   averageSpendingError: string | null = null;
+  userError: string | null = null;
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     console.log('ngOnInit called');
+    this.http.get('http://localhost:5146/api/users/me').subscribe({
+      next: (res) => {
+        this.userInfo = res;
+      },
+      error: (err) => {
+        this.userError = 'Failed to load user info.';
+      }
+    });
     this.loadBalances();
     this.loadTransactions();
     this.http.get<any[]>('http://localhost:5146/api/analytics/balance-evolution')
