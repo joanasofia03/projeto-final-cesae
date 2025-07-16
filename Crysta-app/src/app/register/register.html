@@ -1,0 +1,16 @@
+<p>resgister works!</p>
+<form (ngSubmit)="register()">
+  <input type="text" placeholder="Full Name" [(ngModel)]="userData.fullName" name="fullName" required />
+  <input [(ngModel)]="userData.email" name="email" required placeholder="Email" />
+  <input type="password" placeholder="Password" [(ngModel)]="userData.password" name="password" required />
+  <input type="text" placeholder="Phone" [(ngModel)]="userData.phoneNumber" name="phone" required />
+  <input [(ngModel)]="userData.documentId" name="documentId" required placeholder="Document ID" />
+  <input type="date" [(ngModel)]="userData.birthDate" name="birthDate" required />
+  <input type="text" placeholder="Region" [(ngModel)]="userData.region" name="region" required />
+  
+  <button type="submit">Register</button>
+
+  <div *ngIf="errorMessage" class="error-message" style="color: red">
+  {{ errorMessage }}
+</div>
+</form>

@@ -32,6 +32,9 @@ public class UsersController : ControllerBase
         if (await _context.AppUsers.AnyAsync(u => u.DocumentId == dto.DocumentId))
             return Conflict("This document is already registered.");
 
+        if (await _context.AppUsers.AnyAsync(u => u.PhoneNumber == dto.PhoneNumber))
+            return Conflict("This phone number is already registered.");
+
         var clientRole = await _context.AppRoles.FirstOrDefaultAsync(r => r.RoleName == "Client");
         if (clientRole == null)
             return StatusCode(500, "Client role not found in the database.");
