@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { jwtDecode } from 'jwt-decode';
+import { Router } from '@angular/router';
 interface JwtPayload {
   nameid: string;
   // ... other fields if you want
@@ -52,7 +53,7 @@ export class ClientComponent implements OnInit {
   averageSpendingError: string | null = null;
   userError: string | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     console.log('ngOnInit called');
@@ -283,6 +284,10 @@ export class ClientComponent implements OnInit {
   resetFilters() {
     this.filters = { from: '', to: '', type: null };
     this.loadTransactions();
+  }
+
+  goToEdit() {
+    this.router.navigate(['/client/edit-profile']);
   }
 
 }

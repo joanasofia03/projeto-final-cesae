@@ -118,11 +118,13 @@ public class UsersController : ControllerBase
 
         var response = new UserLoginResponseDto
         {
+            Id = user.ID,
             FullName = user.FullName ?? string.Empty,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber ?? string.Empty,
             DocumentId = user.DocumentId ?? string.Empty,
             BirthDate = user.BirthDate,
+            Region = user.Region ?? string.Empty,
             Roles = roles,
             Token = ""
         };
@@ -166,6 +168,12 @@ public class UsersController : ControllerBase
 
         if (dto.BirthDate != null)
             user.BirthDate = (DateTime)dto.BirthDate;
+
+        if (await _context.AppUsers.AnyAsync(u => u.Email == user.Email && u.ID != id))
+            return Conflict("This email is already registered.");
+
+        if (await _context.AppUsers.AnyAsync(u => u.PhoneNumber == user.PhoneNumber && u.ID != id))
+            return Conflict("This phone number is already registered.");
 
         _context.AppUsers.Update(user);
         await _context.SaveChangesAsync();

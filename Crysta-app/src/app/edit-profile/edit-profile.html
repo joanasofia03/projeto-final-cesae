@@ -1,0 +1,27 @@
+<p>edit-profile works!</p>
+<h2>Edit Your Profile</h2>
+
+<form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+  <label>Full Name:</label>
+  <input type="text" [(ngModel)]="userData.fullName" name="fullName" required />
+
+  <label>Email:</label>
+  <input type="email" [(ngModel)]="userData.email" name="email" required />
+
+  <label>Phone Number:</label>
+  <input type="text" [(ngModel)]="userData.phoneNumber" name="phoneNumber" required />
+
+  <label>Region:</label>
+  <input type="text" [(ngModel)]="userData.region" name="region" required />
+
+  <label>Birth Date:</label>
+  <input type="date" [(ngModel)]="userData.birthDate" name="birthDate" required />
+
+  <button type="submit" [disabled]="!profileForm.form.valid">Update Profile</button>
+</form>
+
+<!-- Success/Error Messages -->
+<div *ngIf="message" class="success-message">{{ message }}</div>
+<div *ngIf="error" class="error-message">{{ error }}</div>
+
+<button (click)="goToClientPage()">Back to Client Page</button>
