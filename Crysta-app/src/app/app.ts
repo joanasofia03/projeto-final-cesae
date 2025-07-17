@@ -21,4 +21,8 @@ export class AppComponent {
   goToRegister() {
     this.router.navigate(['/register']);
   }
+
+  goToMarketAssets() {
+    this.router.navigate(['/market-assets']);
+  }
 }

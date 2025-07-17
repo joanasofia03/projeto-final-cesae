@@ -5,9 +5,11 @@ import { ClientComponent } from './client/client';
 import { AdminComponent } from './admin/admin';
 import { RegisterComponent } from './register/register';
 import { EditProfileComponent } from './edit-profile/edit-profile';
+import { MarketAssetsComponent } from './market-assets/market-assets';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'market-assets', component: MarketAssetsComponent },
   { path: 'client', component: ClientComponent },
   { path: 'client/edit-profile', component: EditProfileComponent },
   { path: 'admin', component: AdminComponent },

@@ -28,6 +28,7 @@ public class Dim_Market_AssetController : ControllerBase
         {
             result.Add(new DimMarketAssetReadDto
             {
+                Asset_Id = asset.ID,
                 Asset_Name = asset.Asset_Name,
                 Asset_Type = asset.Asset_Type,
                 Symbol = asset.Symbol,

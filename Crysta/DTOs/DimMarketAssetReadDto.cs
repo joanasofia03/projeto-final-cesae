@@ -1,5 +1,6 @@
 public class DimMarketAssetReadDto
 {
+    public int Asset_Id { get; set; }
     public string? Asset_Name { get; set; }
     public string? Asset_Type { get; set; }
     public string? Symbol { get; set; }
