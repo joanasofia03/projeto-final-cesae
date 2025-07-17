@@ -6,8 +6,10 @@ import { AdminComponent } from './admin/admin';
 import { RegisterComponent } from './register/register';
 import { EditProfileComponent } from './edit-profile/edit-profile';
 import { MarketAssetsComponent } from './market-assets/market-assets';
+import { MainPageComponent } from './mainpage/mainpage';
 
 export const routes: Routes = [
+  { path: '', component: MainPageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'market-assets', component: MarketAssetsComponent },
   { path: 'client', component: ClientComponent },
