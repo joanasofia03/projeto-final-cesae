@@ -1,16 +1,70 @@
-<p>resgister works!</p>
-<form (ngSubmit)="register()">
-  <input type="text" placeholder="Full Name" [(ngModel)]="userData.fullName" name="fullName" required />
-  <input [(ngModel)]="userData.email" name="email" required placeholder="Email" />
-  <input type="password" placeholder="Password" [(ngModel)]="userData.password" name="password" required />
-  <input type="text" placeholder="Phone" [(ngModel)]="userData.phoneNumber" name="phone" required />
-  <input [(ngModel)]="userData.documentId" name="documentId" required placeholder="Document ID" />
-  <input type="date" [(ngModel)]="userData.birthDate" name="birthDate" required />
-  <input type="text" placeholder="Region" [(ngModel)]="userData.region" name="region" required />
-  
-  <button type="submit">Register</button>
+<!DOCTYPE html>
+<html lang="pt">
 
-  <div *ngIf="errorMessage" class="error-message" style="color: red">
-  {{ errorMessage }}
-</div>
-</form>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - Crysta Finance App</title>
+  <link rel="stylesheet" href="register.css">
+</head>
+
+<body>
+  <main>
+    <button class="close-btn" onclick="history.back()">&times;</button>
+
+    <div class="logo">
+      <img src="assets/CrystaLogo.png" alt="crystalogo" width="100px" height="100px">
+      <h1>CRYSTA</h1>
+      <p class="subtitle">FINANCE APP</p>
+    </div>
+
+    <form (ngSubmit)="register()" #signupForm="ngForm">
+      <div class="input-group">
+        <input type="text" name="fullName" [(ngModel)]="userData.fullName" placeholder="Full Name" required />
+      </div>
+
+      <div class="input-group">
+        <input type="email" name="email" [(ngModel)]="userData.email" placeholder="Email" required />
+      </div>
+
+      <div class="input-group">
+        <input type="password" name="password" [(ngModel)]="userData.password" placeholder="Password" required />
+      </div>
+
+      <div class="input-group">
+        <input type="text" name="phone" [(ngModel)]="userData.phoneNumber" placeholder="Phone" required />
+      </div>
+
+      <div class="input-group">
+        <input type="text" name="documentId" [(ngModel)]="userData.documentId" placeholder="Document ID" required />
+      </div>
+
+      <div class="input-group">
+        <input type="date" name="birthDate" [(ngModel)]="userData.birthDate" required />
+      </div>
+
+      <div class="input-group">
+        <select name="region" [(ngModel)]="userData.region" required>
+          <option value="" disabled selected>Select your city</option>
+          <option value="New York, NY">New York, NY</option>
+          <option value="Los Angeles, CA">Los Angeles, CA</option>
+          <option value="Chicago, IL">Chicago, IL</option>
+          <option value="Houston, TX">Houston, TX</option>
+          <option value="Phoenix, AZ">Phoenix, AZ</option>
+          <option value="Miami, FL">Miami, FL</option>
+          <option value="San Francisco, CA">San Francisco, CA</option>
+          <option value="Seattle, WA">Seattle, WA</option>
+          <option value="Atlanta, GA">Atlanta, GA</option>
+          <option value="Boston, MA">Boston, MA</option>
+        </select>
+      </div>
+
+      <button type="submit" class="signup-btn">Register</button>
+    </form>
+
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </main>
+
+</body>
+
+</html>

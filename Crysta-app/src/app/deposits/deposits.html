@@ -1,0 +1,30 @@
+<body>
+  <main>
+    <div class="deposits-container">
+      <h2>Make a Deposit</h2>
+       <button class="close-btn" onclick="history.back()">&times;</button>
+
+      <form class="deposits-form" (ngSubmit)="makeDeposit()" #depositForm="ngForm">
+        <div class="form-group">
+          <label for="account">Select Account:</label>
+          <select id="account" [(ngModel)]="deposit.accountId" name="account" required>
+            <option value="" disabled>-- Select an account --</option>
+            <option *ngFor="let acc of balances" [value]="acc.accountId">
+              {{ acc.accountId }} - {{ acc.accountType }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Amount:</label>
+          <input type="number" id="amount" [(ngModel)]="deposit.amount" name="amount" required min="0.01" step="0.01"
+            placeholder="Enter amount to deposit" />
+        </div>
+
+        <button type="submit" class="deposit-button" [disabled]="!depositForm.form.valid">
+          Make Deposit
+        </button>
+      </form>
+    </div>
+  </main>
+</body>

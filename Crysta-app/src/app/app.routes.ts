@@ -7,6 +7,11 @@ import { RegisterComponent } from './register/register';
 import { EditProfileComponent } from './edit-profile/edit-profile';
 import { MarketAssetsComponent } from './market-assets/market-assets';
 import { MainPageComponent } from './mainpage/mainpage';
+import { DepositsComponent } from './deposits/deposits';
+import { MakeTransferComponent } from './make-transfer/make-transfer';
+import { TransactionsComponent } from './transactions/transactions';
+import { StatisticsComponent } from './statistics/statistics';
+import { NotificationsComponent } from './notifications/notifications';
 
 export const routes: Routes = [
   { path: '', component: MainPageComponent },
@@ -14,6 +19,11 @@ export const routes: Routes = [
   { path: 'market-assets', component: MarketAssetsComponent },
   { path: 'client', component: ClientComponent },
   { path: 'client/edit-profile', component: EditProfileComponent },
+  { path: 'client/make-transfer', component: MakeTransferComponent },
+  { path: 'client/deposits', component: DepositsComponent },
+  { path: 'client/transactions', component: TransactionsComponent },
+  { path: 'client/statistics', component: StatisticsComponent },
+  { path: 'client/notifications', component: NotificationsComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'register', component: RegisterComponent },
   // fallback

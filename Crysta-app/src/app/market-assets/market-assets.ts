@@ -2,12 +2,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-market-assets',
   templateUrl: './market-assets.html',
   styleUrls: ['./market-assets.css'],
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   providers: [DatePipe]
 })
 
@@ -16,8 +17,10 @@ export class MarketAssetsComponent implements OnInit {
   selectedAssetId: number | null = null;
   history: any[] = [];
   error: string = '';
+  startDate: string = '';
+  endDate: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.loadAssets();
@@ -50,4 +53,16 @@ export class MarketAssetsComponent implements OnInit {
       }
     });
   }
+
+  get filteredHistory() {
+    return this.history.filter(h => {
+      const historyDate = new Date(h.date);
+      const start = this.startDate ? new Date(this.startDate) : null;
+      const end = this.endDate ? new Date(this.endDate) : null;
+
+      return (!start || historyDate >= start) &&
+        (!end || historyDate <= end);
+    });
+  }
+
 }

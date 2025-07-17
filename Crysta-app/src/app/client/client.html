@@ -1,169 +1,46 @@
-<p>client works!</p>
-<button (click)="goToEdit()">Edit Profile</button>
-<h1>Client Dashboard</h1>
-
-<div *ngIf="userInfo; else loadingUser">
-  <h2>Welcome, {{ userInfo.fullName }}</h2>
-  <p><strong>Email:</strong> {{ userInfo.email }}</p>
-  <p><strong>Phone:</strong> {{ userInfo.phoneNumber }}</p>
-  <p><strong>Document ID:</strong> {{ userInfo.documentId }}</p>
-  <p><strong>Birth Date:</strong> {{ userInfo.birthDate | date }}</p>
-  <p><strong>Region:</strong> {{ userInfo.region }}</p>
-  <p><strong>Role:</strong> {{ userInfo.roles.join(', ') }}</p>
-</div>
-
-<ng-template #loadingUser>
-  <p *ngIf="userError">{{ userError }}</p>
-  <p *ngIf="!userError">Loading user information...</p>
-</ng-template>
-
-<div class="total-balance-section">
-  <h2>Your Total Balance</h2>
-
-  <div *ngIf="totalBalance !== null; else loadingOrError">
-    <p><strong>Total:</strong> {{ totalBalance | currency }}</p>
-  </div>
-
-  <ng-template #loadingOrError>
-    <p *ngIf="totalBalanceError">{{ totalBalanceError }}</p>
-    <p *ngIf="!totalBalanceError">Loading total balance...</p>
-  </ng-template>
-
-  <div *ngIf="averageSpending !== null; else loadingOrError">
-    <h2>Average Monthly Spending: {{ averageSpending | currency }}</h2>
-
-    <h3>Monthly Breakdown:</h3>
-    <ul>
-      <li *ngFor="let month of monthlyBreakdown">
-        {{ month.month }}/{{ month.year }} - {{ month.totalSpent | currency }}
-      </li>
-    </ul>
-
-  </div>
-
-  <h2>Balance Evolution</h2>
-  <ul>
-    <li *ngFor="let point of balanceEvolution">
-      {{ point.date | date: 'MMM d, y' }} — {{ point.balance | currency }}
-    </li>
-  </ul>
-
-
-  <ng-template #loadingOrError>
-    <p *ngIf="averageSpendingError">{{ averageSpendingError }}</p>
-    <p *ngIf="!averageSpendingError">Loading average spending...</p>
-  </ng-template>
-
-  <div *ngIf="balances.length > 0; else noAccounts">
-    <h2>Your Accounts</h2>
-    <div *ngFor="let acc of balances" class="account-card">
-      <p><strong>Account ID:</strong> {{ acc.accountId }}</p>
-      <p><strong>Type:</strong> {{ acc.accountType }}</p>
-      <p><strong>Currency:</strong> {{ acc.currency }}</p>
-      <p><strong>Balance:</strong> {{ acc.balance }}</p>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-buttons">
+      <button (click)="goToDeposits()">Deposits</button>
+      <button (click)="goToMakeTransfer()">Make Transfer</button>
+      <button (click)="goToNotifications()">Notifications</button>
+      <button (click)="goToStatistics()">Statistics</button>
+      <button (click)="goToTransactions()">Transactions</button>
     </div>
-  </div>
+  </nav>
 
-  <ng-template #noAccounts>
-    <p>No accounts found.</p>
-  </ng-template>
-
-  <hr />
-
-  <h2>Filter Transactions</h2>
-  <form (ngSubmit)="filterTransactions()" #filterForm="ngForm">
-    <label for="from">From:</label>
-    <input type="date" [(ngModel)]="filters.from" name="from" />
-
-    <label for="to">To:</label>
-    <input type="date" [(ngModel)]="filters.to" name="to" />
-
-    <select [(ngModel)]="filters.type" name="type">
-      <option [ngValue]="null">-- All Types --</option>
-      <option *ngFor="let type of transactionTypes" [value]="type.id">
-        {{ type.label }}
-      </option>
-    </select>
-
-    <button type="submit">Apply Filter</button>
-    <button type="button" (click)="resetFilters()">Reset</button>
-
-
-  </form>
-
-  <div *ngIf="transactions.length > 0; else noTransactions">
-    <h2>Your Transactions</h2>
-
-    <div *ngFor="let tx of transactions" class="transaction-card">
-      <p><strong>Source Account:</strong> {{ tx.sourceAccountName }}</p>
-      <p><strong>Destination Account:</strong> {{ tx.destinationAccountName }}</p>
-      <p><strong>Date:</strong> {{ tx.transactionDate | date:'shortDate' }}</p>
-      <p><strong>Type:</strong> {{ tx.transactionTypeName }}</p>
-      <p><strong>Amount:</strong> {{ tx.transaction_Amount | currency }}</p>
-      <p><strong>Balance After Transaction:</strong> {{ tx.balance_After_Transaction | currency }}</p>
-      <p><strong>Execution Channel:</strong> {{ tx.execution_Channel }}</p>
-      <p><strong>Status:</strong> {{ tx.transaction_Status }}</p>
-    </div>
-  </div>
-
-  <ng-template #noTransactions>
-    <p>No transactions found.</p>
-  </ng-template>
-
-  <!-- === NOTIFICATIONS SECTION === -->
-  <div *ngIf="notifications.length > 0; else noNotifications">
-    <h2>Your Notifications</h2>
-
-    <div *ngFor="let note of notifications" class="notification-card">
-      <div class="notification-row">
-        <p><strong>User:</strong> {{ note.userName }}</p>
-        <p><strong>Type:</strong> {{ note.notificationType }}</p>
-      </div>
-
-      <div class="notification-row">
-        <p><strong>Channel:</strong> {{ note.channel }}</p>
-        <p><strong>Status:</strong> {{ note.status }}</p>
-      </div>
-
-      <div class="notification-row">
-        <p><strong>Date:</strong> {{ note.notificationDate | date: 'shortDate' }}</p>
+  <main>
+    <div class="header-content">
+      <h1>Client Dashboard</h1>
+      <div class="header-buttons">
+        <button (click)="goToEdit()">Edit Profile</button>
       </div>
     </div>
-  </div>
 
-  <ng-template #noNotifications>
-    <p>No notifications found.</p>
-  </ng-template>
+    <div *ngIf="userInfo; else loadingUser" class="user-info-section">
+      <h2>Welcome, {{ userInfo.fullName }}</h2>
+      <p><strong>Email:</strong> {{ userInfo.email }}</p>
+      <p><strong>Phone:</strong> {{ userInfo.phoneNumber }}</p>
+      <p><strong>Document ID:</strong> {{ userInfo.documentId }}</p>
+      <p><strong>Birth Date:</strong> {{ userInfo.birthDate | date }}</p>
+      <p><strong>Region:</strong> {{ userInfo.region }}</p>
+      <p><strong>Role:</strong> {{ userInfo.roles.join(', ') }}</p>
+    </div>
 
-  <h2>Make a Deposit</h2>
+    <ng-template #loadingUser>
+      <div class="loading-section">
+        <p *ngIf="userError" class="error-message">{{ userError }}</p>
+        <p *ngIf="!userError">Loading user information...</p>
+      </div>
+    </ng-template>
 
-  <form (ngSubmit)="makeDeposit()" #depositForm="ngForm">
-    <label for="account">Select Account:</label>
-    <select [(ngModel)]="deposit.accountId" name="account" required>
-      <option *ngFor="let acc of balances" [value]="acc.accountId">{{ acc.accountId }} - {{ acc.accountType }}</option>
-    </select>
-
-    <label for="amount">Amount:</label>
-    <input type="number" [(ngModel)]="deposit.amount" name="amount" required min="0.01" step="0.01" />
-
-    <button type="submit" [disabled]="!depositForm.form.valid">Deposit</button>
-  </form>
-
-  <h2>Make a Transfer</h2>
-
-  <form (ngSubmit)="makeTransaction()" #transactionForm="ngForm">
-    <label for="sourceAccount">Source Account:</label>
-    <select [(ngModel)]="transaction.sourceAccountId" name="sourceAccount" required>
-      <option *ngFor="let acc of balances" [value]="acc.accountId">{{ acc.accountId }} - {{ acc.accountType }}</option>
-    </select>
-
-    <label for="destinationAccount">Destination Account ID:</label>
-    <input type="number" [(ngModel)]="transaction.destinationAccountId" name="destinationAccount" required min="1" />
-
-
-    <label for="amount">Amount:</label>
-    <input type="number" [(ngModel)]="transaction.amount" name="amount" required min="0.01" step="0.01" />
-
-    <button type="submit" [disabled]="!transactionForm.form.valid">Transfer</button>
-  </form>
-  
+    <router-outlet></router-outlet>
+  </main>
+</body>
+</html>

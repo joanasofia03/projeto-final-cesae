@@ -1,0 +1,46 @@
+<body>
+  <main>
+    <h2>Filter Transactions</h2>
+    <button class="close-btn" onclick="history.back()">&times;</button>
+    
+    <form (ngSubmit)="filterTransactions()" #filterForm="ngForm">
+      <label for="from">From:</label>
+      <input type="date" [(ngModel)]="filters.from" name="from" />
+
+      <label for="to">To:</label>
+      <input type="date" [(ngModel)]="filters.to" name="to" />
+
+      <select [(ngModel)]="filters.type" name="type">
+        <option [ngValue]="null">-- All Types --</option>
+        <option *ngFor="let type of transactionTypes" [value]="type.id">
+          {{ type.label }}
+        </option>
+      </select>
+
+      <button type="submit">Apply Filter</button>
+      <button type="button" (click)="resetFilters()">Reset</button>
+
+
+    </form>
+
+    <div *ngIf="transactions.length > 0; else noTransactions">
+      <h2>Your Transactions</h2>
+
+      <div *ngFor="let tx of transactions" class="transaction-card">
+        <p><strong>Source Account:</strong> {{ tx.sourceAccountName }}</p>
+        <p><strong>Destination Account:</strong> {{ tx.destinationAccountName }}</p>
+        <p><strong>Date:</strong> {{ tx.transactionDate | date:'shortDate' }}</p>
+        <p><strong>Type:</strong> {{ tx.transactionTypeName }}</p>
+        <p><strong>Amount:</strong> {{ tx.transaction_Amount | currency }}</p>
+        <p><strong>Balance After Transaction:</strong> {{ tx.balance_After_Transaction | currency }}</p>
+        <p><strong>Execution Channel:</strong> {{ tx.execution_Channel }}</p>
+        <p><strong>Status:</strong> {{ tx.transaction_Status }}</p>
+      </div>
+    </div>
+
+    <ng-template #noTransactions>
+      <p>No transactions found.</p>
+    </ng-template>
+
+  </main>
+</body>

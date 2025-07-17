@@ -1,20 +1,38 @@
-<p>login works!</p>
-<form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-  <input
-    type="email"
-    name="email"
-    [(ngModel)]="email"
-    placeholder="Email"
-    required
-  />
-  <input
-    type="password"
-    name="password"
-    [(ngModel)]="password"
-    placeholder="Password"
-    required
-  />
-  <button type="submit">Login</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
 
-<div *ngIf="errorMessage" style="color: red">{{ errorMessage }}</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Crysta Finance App</title>
+  <link rel="stylesheet" href="login.scss">
+</head>
+
+<body>
+  <main>
+    <button class="close-btn" onclick="history.back()">&times;</button>
+
+    <div class="logo">
+      <img src="assets/CrystaLogo.png" alt="crystalogo" width="100px" height="100px">
+      <h1>CRYSTA</h1>
+      <p class="subtitle">FINANCE APP</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="input-group">
+        <input type="email" name="email" [(ngModel)]="email" placeholder="Email" required />
+      </div>
+
+      <div class="input-group">
+        <input type="password" name="password" [(ngModel)]="password" placeholder="Password" required />
+      </div>
+
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div *ngIf="errorMessage" style="color: red">{{ errorMessage }}</div>
+  </main>
+
+</body>
+
+</html>

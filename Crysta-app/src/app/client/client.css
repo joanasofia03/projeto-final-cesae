@@ -1,42 +1,196 @@
-.transaction-card {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.transaction-card p {
-  margin: 0.4rem 0;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 50%, #8e24aa 100%);
+    min-height: 100vh;
+    padding: 20px;
 }
 
-.notification-card {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.navbar {
+    background: rgba(255, 255, 255, 0.379);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-.notification-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.notification-row p {
-  flex: 1;
-  margin: 0;
-  padding: 0 0.5rem;
-  font-size: 0.95rem;
+.nav-buttons button {
+    background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.total-balance-section {
-  padding: 10px;
-  background-color: #eef5ff;
-  border: 1px solid #ccc;
-  margin-bottom: 15px;
-  border-radius: 8px;
+.nav-buttons button:hover {
+    background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%);
+}
+
+.nav-buttons button:active {
+    transform: translateY(0);
+}
+
+.nav-buttons button.active {
+    background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+main {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 48px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Botão do Header - Edit Perfil */
+.header-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    justify-content: flex-end;
+}
+
+button {
+    background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Título principal */
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+}
+
+/* Seção de informações do utilizador */
+.user-info-section {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(142, 36, 170, 0.1);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.user-info-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 24px;
+    text-align: center;
+    background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.user-info-section p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(142, 36, 170, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.user-info-section p:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.user-info-section p strong {
+    color: #333;
+    font-weight: 600;
+    min-width: 140px;
+    display: inline-block;
+    margin-right: 16px;
+}
+
+/* Estados de carregamento e erro */
+.loading-section {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 16px;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 16px;
+    text-align: center;
+    padding: 20px;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    margin-bottom: 24px;
+}
+
+/* Animação de carregamento */
+.loading-section::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #8e24aa;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

@@ -1,0 +1,235 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 50%, #8e24aa 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    position: relative;
+}
+
+main {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 48px;
+    width: 900px;
+    max-width: 95vw;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 20px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Filter Form Styles */
+form {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(142, 36, 170, 0.1);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 20px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: #8e24aa;
+    box-shadow: 0 0 0 3px rgba(142, 36, 170, 0.1);
+}
+
+.filter-group select {
+    cursor: pointer;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.filter-buttons button {
+    background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(142, 36, 170, 0.3);
+}
+
+.filter-buttons button:hover {
+    background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(142, 36, 170, 0.4);
+}
+
+.filter-buttons button:active {
+    transform: translateY(0);
+}
+
+.filter-buttons button[type="button"] {
+    background: linear-gradient(135deg, #666 0%, #555 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.filter-buttons button[type="button"]:hover {
+    background: linear-gradient(135deg, #555 0%, #444 100%);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Transaction Card Styles */
+.transaction-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(142, 36, 170, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.transaction-card:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-card p {
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.transaction-card p:last-child {
+    margin-bottom: 0;
+}
+
+.transaction-card strong {
+    color: #333;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 200px;
+    margin-right: 12px;
+}
+
+/* Special styling for amount */
+.transaction-card p:nth-child(5) {
+    background: rgba(142, 36, 170, 0.05);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-left: 4px solid #8e24aa;
+}
+
+/* Special styling for balance */
+.transaction-card p:nth-child(6) {
+    background: rgba(76, 175, 80, 0.05);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-left: 4px solid #4caf50;
+}
+
+/* Status styling */
+.transaction-card p:last-child {
+    text-align: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    background: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    margin-top: 16px;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+/* No transactions message */
+.no-transactions {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px 24px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    border: 1px dashed rgba(142, 36, 170, 0.2);
+    margin-top: 24px;
+    font-size: 18px;
+}

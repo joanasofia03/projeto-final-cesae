@@ -1,34 +1,277 @@
-<p>market-assets works!</p>
-<h2>Market Assets</h2>
+<!DOCTYPE html>
+<html lang="pt">
 
-<div *ngIf="error" class="error">{{ error }}</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - Crysta Finance App</title>
+  <link rel="stylesheet" href="market-assets.css">
+</head>
 
-<ul>
-  <li *ngFor="let asset of assets">
-    <strong>{{ asset.asset_Name }}</strong> ({{ asset.symbol }})
-    <span>Base Currency: {{ asset.base_Currency }}</span><br>
-    <button (click)="loadHistory(asset.asset_Id)">View History</button>
-  </li>
-</ul>
+<body>
+  <div class="market-assets-container">
+    <header class="page-header">
+      <div class="header-content">
+        <h1>Market Assets</h1>
+        <div class="header-btn">
+          <p class="subtitle">Financial Asset Management</p>
+          <button class="close-btn" onclick="history.back()">&times;</button>
+        </div>
+      </div>
+    </header>
 
-<div *ngIf="history.length > 0">
-  <h3>Market History</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Open</th>
-        <th>Close</th>
-        <th>Volume</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let h of history">
-        <td>{{ h.date | date }}</td>
-        <td>{{ h.open_Price }}</td>
-        <td>{{ h.close_Price }}</td>
-        <td>{{ h.trading_Volume }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    <div *ngIf="error" class="error-message">
+      <span class="error-icon">⚠️</span>
+      {{ error }}
+    </div>
+
+    <main class="assets-content">
+      <section class="assets-grid">
+        <div class="asset-card" *ngFor="let asset of assets">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">{{ asset.asset_Name }}</h3>
+              <span class="asset-symbol">{{ asset.symbol }}</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">{{ asset.base_Currency }}</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn" (click)="loadHistory(asset.asset_Id)">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Ethereum</h3>
+              <span class="asset-symbol">ETH</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Tether</h3>
+              <span class="asset-symbol">USDT</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Binance Coin</h3>
+              <span class="asset-symbol">BNB</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Cardano</h3>
+              <span class="asset-symbol">ADA</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Solana</h3>
+              <span class="asset-symbol">SOL</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Polkadot</h3>
+              <span class="asset-symbol">DOT</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Ripple</h3>
+              <span class="asset-symbol">XRP</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-header">
+            <div class="asset-info">
+              <h3 class="asset-name">Chainlink</h3>
+              <span class="asset-symbol">LINK</span>
+            </div>
+            <div class="asset-currency">
+              <span class="currency-label">Base Currency</span>
+              <span class="currency-value">USD</span>
+            </div>
+          </div>
+          <div class="asset-actions">
+            <button class="history-btn">
+              <span class="btn-icon">📈</span>
+              View History
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="history-section" *ngIf="history.length > 0">
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Transaction History</h2>
+            <div class="section-divider"></div>
+          </div>
+          <div class="date-filter">
+            <div class="filter-group">
+              <label class="filter-label" for="start-date">Beginning 🔍</label>
+              <input type="date" id="start-date" class="date-input" [(ngModel)]="startDate" />
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="end-date">Ending 📅</label>
+            <input type="date" id="end-date" class="date-input" [(ngModel)]="endDate" />
+          </div>
+        </div>
+
+  <div class="table-container">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Opening</th>
+          <th>Closing</th>
+          <th>Volume</th>
+        </tr>
+      </thead>
+      <tbody id="history-body">
+        <tr *ngFor="let h of filteredHistory">
+          <td class="date-cell">{{ h.date | date:'dd/MM/yyyy' }}</td>
+          <td class="price-cell">{{ h.open_Price | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td class="price-cell">{{ h.close_Price | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td class="volume-cell">{{ h.trading_Volume | number:'1.0-0' }}</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+  </section>
+  </main>
+  </div>
+
+</body>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const filterButton = document.getElementById("filter-button");
+    const startDateInput = document.getElementById("start-date");
+    const historyRows = document.querySelectorAll("#history-body tr");
+
+    filterButton.addEventListener("click", function () {
+      const startDate = startDateInput.value;
+      if (!startDate) {
+        // If no date selected, show all rows
+        historyRows.forEach(row => row.style.display = "");
+        return;
+      }
+
+      const start = new Date(startDate);
+
+      historyRows.forEach(row => {
+        const rowDateStr = row.getAttribute("data-date");
+        const rowDate = new Date(rowDateStr);
+
+        if (rowDate >= start) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    });
+  });
+</script>
+
+</html>

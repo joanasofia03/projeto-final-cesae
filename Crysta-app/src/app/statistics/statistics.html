@@ -1,0 +1,55 @@
+<body>
+  <main>
+    <div class="total-balance-section">
+      <h2>Your Total Balance</h2>
+      <button class="close-btn" onclick="history.back()">&times;</button>
+
+      <div *ngIf="totalBalance !== null; else loadingOrError">
+        <p><strong>Total:</strong> {{ totalBalance | currency }}</p>
+      </div>
+
+      <ng-template #loadingOrError>
+        <p *ngIf="totalBalanceError">{{ totalBalanceError }}</p>
+        <p *ngIf="!totalBalanceError">Loading total balance...</p>
+      </ng-template>
+
+      <div *ngIf="averageSpending !== null; else loadingOrError">
+        <h2>Average Monthly Spending: {{ averageSpending | currency }}</h2>
+
+        <h3>Monthly Breakdown:</h3>
+        <ul>
+          <li *ngFor="let month of monthlyBreakdown">
+            {{ month.month }}/{{ month.year }} - {{ month.totalSpent | currency }}
+          </li>
+        </ul>
+
+      </div>
+
+      <h2>Balance Evolution</h2>
+      <ul>
+        <li *ngFor="let point of balanceEvolution">
+          {{ point.date | date: 'MMM d, y' }} — {{ point.balance | currency }}
+        </li>
+      </ul>
+
+      <ng-template #loadingOrError>
+        <p *ngIf="averageSpendingError">{{ averageSpendingError }}</p>
+        <p *ngIf="!averageSpendingError">Loading average spending...</p>
+      </ng-template>
+
+      <div *ngIf="balances.length > 0; else noAccounts">
+        <h2>Your Accounts</h2>
+        <div *ngFor="let acc of balances" class="account-card">
+          <p><strong>Account ID:</strong> {{ acc.accountId }}</p>
+          <p><strong>Type:</strong> {{ acc.accountType }}</p>
+          <p><strong>Currency:</strong> {{ acc.currency }}</p>
+          <p><strong>Balance:</strong> {{ acc.balance }}</p>
+        </div>
+      </div>
+
+      <ng-template #noAccounts>
+        <p>No accounts found.</p>
+      </ng-template>
+    </div>
+  </main>
+</body>
