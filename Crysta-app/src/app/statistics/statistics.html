@@ -3,10 +3,7 @@
     <div class="total-balance-section">
       <h2>Your Total Balance</h2>
       <button class="close-btn" onclick="history.back()">&times;</button>
-
-      <div *ngIf="totalBalance !== null; else loadingOrError">
-        <p><strong>Total:</strong> {{ totalBalance | currency }}</p>
-      </div>
+      <h1>{{ totalBalance | currency }}</h1>
 
       <ng-template #loadingOrError>
         <p *ngIf="totalBalanceError">{{ totalBalanceError }}</p>
@@ -14,7 +11,10 @@
       </ng-template>
 
       <div *ngIf="averageSpending !== null; else loadingOrError">
-        <h2>Average Monthly Spending: {{ averageSpending | currency }}</h2>
+        <h2>
+  Average Monthly Spending: 
+  <span class="highlighted-number">{{ averageSpending | currency }}</span>
+</h2>
 
         <h3>Monthly Breakdown:</h3>
         <ul>
@@ -25,12 +25,14 @@
 
       </div>
 
+      <div *ngIf="balanceEvolution !== null; else loadingOrError">
       <h2>Balance Evolution</h2>
       <ul>
         <li *ngFor="let point of balanceEvolution">
           {{ point.date | date: 'MMM d, y' }} — {{ point.balance | currency }}
         </li>
       </ul>
+      </div>
 
       <ng-template #loadingOrError>
         <p *ngIf="averageSpendingError">{{ averageSpendingError }}</p>

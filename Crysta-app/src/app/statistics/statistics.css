@@ -20,12 +20,31 @@ main {
     backdrop-filter: blur(10px);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    padding: 48px;
+    padding: 32px;
     width: 800px;
     max-width: 95vw;
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.2);
     margin-top: 20px;
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    text-align: left;
+    background: #333;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
 }
 
 .close-btn {
@@ -49,14 +68,24 @@ main {
 .total-balance-section {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 16px;
 }
+
+.highlighted-number {
+  color: #333 !important;
+  font-weight: 700;
+  -webkit-text-fill-color: #333 !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  display: inline-block;
+}
+
 
 .total-balance-section h2 {
     font-size: 28px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -67,15 +96,15 @@ main {
     font-size: 20px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 12px;
-    margin-top: 24px;
+    margin-bottom: 8px;
+    margin-top: 16px;
 }
 
 .total-balance-section p {
     font-size: 16px;
     color: #555;
     line-height: 1.6;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .total-balance-section p strong {
@@ -87,8 +116,8 @@ main {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 16px;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .total-balance-section li {
@@ -112,8 +141,8 @@ main {
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(142, 36, 170, 0.1);
     border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
 }
@@ -145,7 +174,7 @@ hr {
     border: none;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(142, 36, 170, 0.3), transparent);
-    margin: 32px 0;
+    margin: 24px 0;
 }
 
 /* Loading and error states */
@@ -167,3 +196,6 @@ ng-template p {
     border-radius: 8px;
     border: 1px dashed rgba(142, 36, 170, 0.2);
 }
+
+
+
