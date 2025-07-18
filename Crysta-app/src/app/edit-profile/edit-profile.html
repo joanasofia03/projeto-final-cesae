@@ -1,27 +1,66 @@
-<p>edit-profile works!</p>
-<h2>Edit Your Profile</h2>
+<body>
+  <main>
+  <button class="close-btn" onclick="history.back()">&times;</button>
 
-<form (ngSubmit)="updateProfile()" #profileForm="ngForm">
-  <label>Full Name:</label>
-  <input type="text" [(ngModel)]="userData.fullName" name="fullName" required />
+  <h2>Edit Your Profile</h2>
 
-  <label>Email:</label>
-  <input type="email" [(ngModel)]="userData.email" name="email" required />
+  <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+    <div class="input-group">
+      <input
+        type="text"
+        name="fullName"
+        [(ngModel)]="userData.fullName"
+        placeholder="Full Name"
+        required
+      />
+    </div>
 
-  <label>Phone Number:</label>
-  <input type="text" [(ngModel)]="userData.phoneNumber" name="phoneNumber" required />
+    <div class="input-group">
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="userData.email"
+        placeholder="Email"
+        required
+      />
+    </div>
 
-  <label>Region:</label>
-  <input type="text" [(ngModel)]="userData.region" name="region" required />
+    <div class="input-group">
+      <input
+        type="text"
+        name="phoneNumber"
+        [(ngModel)]="userData.phoneNumber"
+        placeholder="Phone Number"
+        required
+      />
+    </div>
 
-  <label>Birth Date:</label>
-  <input type="date" [(ngModel)]="userData.birthDate" name="birthDate" required />
+    <div class="input-group">
+      <input
+        type="text"
+        name="region"
+        [(ngModel)]="userData.region"
+        placeholder="Region"
+        required
+      />
+    </div>
 
-  <button type="submit" [disabled]="!profileForm.form.valid">Update Profile</button>
-</form>
+    <div class="input-group">
+      <input
+        type="date"
+        name="birthDate"
+        [(ngModel)]="userData.birthDate"
+        required
+      />
+    </div>
 
-<!-- Success/Error Messages -->
-<div *ngIf="message" class="success-message">{{ message }}</div>
-<div *ngIf="error" class="error-message">{{ error }}</div>
+    <button type="submit" [disabled]="!profileForm.form.valid" class="signup-btn">
+      Update Profile
+    </button>
+  </form>
 
-<button (click)="goToClientPage()">Back to Client Page</button>
+  <div *ngIf="message" class="success-message">{{ message }}</div>
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  </main>
+
+</body>
