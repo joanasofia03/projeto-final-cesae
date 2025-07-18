@@ -12,6 +12,7 @@ import { MakeTransferComponent } from './make-transfer/make-transfer';
 import { TransactionsComponent } from './transactions/transactions';
 import { StatisticsComponent } from './statistics/statistics';
 import { NotificationsComponent } from './notifications/notifications';
+import { OpenBankAccountComponent } from './open-bank-account/open-bank-account';
 
 export const routes: Routes = [
   { path: '', component: MainPageComponent },
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'client/statistics', component: StatisticsComponent },
   { path: 'client/notifications', component: NotificationsComponent },
   { path: 'admin', component: AdminComponent },
+  { path: 'admin/open-bank-account', component: OpenBankAccountComponent },
   { path: 'register', component: RegisterComponent },
   // fallback
   { path: '**', redirectTo: '' },

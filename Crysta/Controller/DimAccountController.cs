@@ -77,22 +77,23 @@ public class Dim_AccountController : ControllerBase
 
     // POST: http://localhost:5146/api/dim_account/create-account
     [HttpPost("create-account")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Create([FromBody] CreateDimAccountDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+        
+        if (!User.IsInRole("Administrator"))
+            return Forbid();
 
-        var userIdString = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdString))
-            return Unauthorized();
-
-        var userId = int.Parse(userIdString);
+        if (dto.UserId <= 0)
+            return BadRequest("UserId must be provided and greater than zero.");
 
         var account = new Dim_Account
         {
             Account_Type = dto.Account_Type,
             Account_Status = dto.Account_Status,
-            AppUser_ID = userId, // Logged user
+            AppUser_ID = dto.UserId,
             Opening_Date = DateTime.UtcNow,
             Currency = dto.Currency
         };
@@ -101,7 +102,7 @@ public class Dim_AccountController : ControllerBase
         await _context.SaveChangesAsync();
 
         await _notificationService.CreateNotificationAsync(
-            appUserId: userId,
+            appUserId: dto.UserId,
             notificationDate: DateTime.UtcNow,
             notificationType: "Account Created",
             channel: "API",

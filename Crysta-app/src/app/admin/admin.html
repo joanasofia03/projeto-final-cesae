@@ -1,2 +1,39 @@
-<p>admin works!</p>
-<h1>Admin Dashboard</h1>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-buttons">
+      <button (click)="goToOpenBankAccount()">Open Bank Account</button>
+      <button (click)="goToManageBankAccount()">Manage Bank Account</button>
+      <button (click)="goToConsult()">Consult</button>
+      <button>Statistics</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header-content">
+      <h1>Admin Dashboard</h1>
+    </div>
+
+    <div *ngIf="userInfo; else loadingUser" class="user-info-section">
+      <h2>Welcome, {{ userInfo.fullName }}</h2>
+      <p><strong>Email:</strong> {{ userInfo.email }}</p>
+      <p><strong>Phone:</strong> {{ userInfo.phoneNumber }}</p>
+      <p><strong>Role:</strong> {{ userInfo.roles.join(', ') }}</p>
+    </div>
+
+    <ng-template #loadingUser>
+      <div class="loading-section">
+        <p *ngIf="userError" class="error-message">{{ userError }}</p>
+        <p *ngIf="!userError">Loading user information...</p>
+      </div>
+    </ng-template>
+
+    <router-outlet></router-outlet>
+  </main>
+</body>
+</html>

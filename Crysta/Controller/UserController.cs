@@ -19,6 +19,31 @@ public class UsersController : ControllerBase
         _notificationService = notificationService;
     }
 
+    // GET: http://localhost:5146/api/users/getall
+    [HttpGet("getall")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _context.AppUsers
+            .Where(u => u.DeletedAt == null)
+            .Select(u => new
+            {
+                u.ID,
+                u.Email,
+                u.FullName,
+                u.PhoneNumber,
+                u.DocumentId,
+                u.BirthDate,
+                u.Region
+            })
+            .ToListAsync();
+
+        if (users == null || !users.Any())
+            return NotFound("No users found.");
+
+        return Ok(users);
+    }
+
     // POST http://localhost:5146/api/users/create-user
     [HttpPost("create-user")]
     public async Task<IActionResult> CreateUser([FromBody] CreateAppUserDto dto)

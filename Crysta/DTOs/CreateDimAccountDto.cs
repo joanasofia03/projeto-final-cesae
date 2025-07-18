@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 public class CreateDimAccountDto
 {
+    [Required(ErrorMessage = "User ID is required.")]
+    public int UserId { get; set; }
+
     [Required(ErrorMessage = "Account type is required.")]
     [StringLength(30)]
     [RegularExpression(@"^[A-Za-z\s_-]*$", ErrorMessage = "Account type must contain only letters, spaces, underscores or hyphens.")]
