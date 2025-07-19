@@ -58,6 +58,10 @@ export class ClientComponent implements OnInit {
  goToTransactions() {
     this.router.navigate(['/client/transactions']);
   }
+
+ goToUpdatePassword() {
+    this.router.navigate(['/client/update-password']);
+  }
 }
 
 

@@ -15,6 +15,7 @@ import { NotificationsComponent } from './notifications/notifications';
 import { OpenBankAccountComponent } from './open-bank-account/open-bank-account';
 import { ManageBankAccountComponent } from './manage-bank-account/manage-bank-account';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized';
+import { UpdatePasswordComponent } from './update-password/update-password';
 import { AuthGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -30,6 +31,11 @@ export const routes: Routes = [
   },
   {
     path: 'client/edit-profile', component: EditProfileComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+    {
+    path: 'client/update-password', component: UpdatePasswordComponent,
     canActivate: [AuthGuard],
     data: { role: 'Client' },
   },

@@ -265,7 +265,7 @@ public class UsersController : ControllerBase
             status: "Completed"
         );
 
-        return Ok("Password updated successfully.");
+        return Ok(new { message = "Password updated successfully." });
     }
 
 

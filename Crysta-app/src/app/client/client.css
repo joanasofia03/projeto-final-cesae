@@ -102,6 +102,10 @@ button:active {
     transform: translateY(0);
 }
 
+.password-button {
+    width: 100%;;
+}
+
 /* Título principal */
 h1 {
     font-size: 32px;

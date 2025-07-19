@@ -179,6 +179,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border: 1px solid rgba(231, 76, 60, 0.2);
 }
 
+.disclaimer {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 12px;
+  padding: 0 12px;
+}
+
+.disclaimer a {
+  color: #8e24aa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.disclaimer a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 480px) {
     main {
         padding: 32px 24px;
