@@ -34,7 +34,8 @@ export class OpenBankAccountComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to load users:', error);
-        this.message = 'Error loading users. Make sure you are logged in as an administrator.';
+        this.message = '';
+        this.errorMessage = 'Error loading users. Make sure you are logged in as an administrator.';
       }
     });
   }
@@ -45,9 +46,11 @@ export class OpenBankAccountComponent implements OnInit {
     this.http.post(url, this.accountData).subscribe({
       next: (response) => {
         this.message = 'Account successfully created!';
+        this.errorMessage = '';
       },
       error: (err) => {
         console.error(err);
+        this.message = '';
         this.errorMessage = err.message || 'Failed to create account.';
       }
     });
