@@ -43,8 +43,4 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/admin/manage-bank-account']);
   }
 
-  goToConsult() {
-    this.router.navigate(['/admin/consult']);
-  }
-
 }

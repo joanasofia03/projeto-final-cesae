@@ -14,21 +14,65 @@ import { StatisticsComponent } from './statistics/statistics';
 import { NotificationsComponent } from './notifications/notifications';
 import { OpenBankAccountComponent } from './open-bank-account/open-bank-account';
 import { ManageBankAccountComponent } from './manage-bank-account/manage-bank-account';
+import { NotAuthorizedComponent } from './not-authorized/not-authorized';
+import { AuthGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   { path: '', component: MainPageComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'not-authorized', component: NotAuthorizedComponent },
   { path: 'market-assets', component: MarketAssetsComponent },
-  { path: 'client', component: ClientComponent },
-  { path: 'client/edit-profile', component: EditProfileComponent },
-  { path: 'client/make-transfer', component: MakeTransferComponent },
-  { path: 'client/deposits', component: DepositsComponent },
-  { path: 'client/transactions', component: TransactionsComponent },
-  { path: 'client/statistics', component: StatisticsComponent },
-  { path: 'client/notifications', component: NotificationsComponent },
-  { path: 'admin', component: AdminComponent },
-  { path: 'admin/open-bank-account', component: OpenBankAccountComponent },
-  { path: 'admin/manage-bank-account', component: ManageBankAccountComponent },
+  {
+    path: 'client',
+    component: ClientComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+  {
+    path: 'client/edit-profile', component: EditProfileComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+  {
+    path: 'client/make-transfer', component: MakeTransferComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+  {
+    path: 'client/deposits', component: DepositsComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+  {
+    path: 'client/transactions', component: TransactionsComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+  {
+    path: 'client/statistics', component: StatisticsComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+  {
+    path: 'client/notifications', component: NotificationsComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Client' },
+  },
+  {
+    path: 'admin', component: AdminComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Administrator' },
+  },
+  {
+    path: 'admin/open-bank-account', component: OpenBankAccountComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Administrator' },
+  },
+  {
+    path: 'admin/manage-bank-account', component: ManageBankAccountComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Administrator' },
+  },
   { path: 'register', component: RegisterComponent },
   // fallback
   { path: '**', redirectTo: '' },
@@ -38,4 +82,4 @@ export const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
