@@ -4,31 +4,19 @@
     <button class="close-btn" onclick="history.back()">&times;</button>
 
     <div class="search-container">
-<div class="filter-bar">
-  <div class="filter-group">
-    <label class="filter-label" for="account-id">ACCOUNT ID 🔢</label>
-    <input
-      type="text"
-      id="account-id"
-      class="text-input"
-      placeholder="Enter Account ID"
-      [(ngModel)]="searchAccountId"
-      (input)="filterAccounts()"
-    />
-  </div>
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label class="filter-label" for="account-id">ACCOUNT ID 🔢</label>
+          <input type="text" id="account-id" class="text-input" placeholder="Enter Account ID"
+            [(ngModel)]="searchAccountId" (input)="filterAccounts()" />
+        </div>
 
-  <div class="filter-group">
-    <label class="filter-label" for="owner-name">OWNER 👤</label>
-    <input
-      type="text"
-      id="owner-name"
-      class="text-input"
-      placeholder="Enter Owner Name"
-      [(ngModel)]="searchOwner"
-      (input)="filterAccounts()"
-    />
-  </div>
-</div>
+        <div class="filter-group">
+          <label class="filter-label" for="owner-name">OWNER 👤</label>
+          <input type="text" id="owner-name" class="text-input" placeholder="Enter Owner Name" [(ngModel)]="searchOwner"
+            (input)="filterAccounts()" />
+        </div>
+      </div>
 
     </div>
 
@@ -44,7 +32,7 @@
         </tr>
       </thead>
       <tbody>
-<tr *ngFor="let account of filteredAccounts">
+        <tr *ngFor="let account of filteredAccounts">
           <td>{{ account.account_ID }}</td>
           <td>{{ account.ownerName }}</td>
           <td>

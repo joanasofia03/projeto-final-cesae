@@ -16,6 +16,7 @@ import { OpenBankAccountComponent } from './open-bank-account/open-bank-account'
 import { ManageBankAccountComponent } from './manage-bank-account/manage-bank-account';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized';
 import { UpdatePasswordComponent } from './update-password/update-password';
+import { ManageUsersComponent } from './manage-users/manage-users';
 import { AuthGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -34,7 +35,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { role: 'Client' },
   },
-    {
+  {
     path: 'client/update-password', component: UpdatePasswordComponent,
     canActivate: [AuthGuard],
     data: { role: 'Client' },
@@ -76,6 +77,16 @@ export const routes: Routes = [
   },
   {
     path: 'admin/manage-bank-account', component: ManageBankAccountComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Administrator' },
+  },
+  {
+    path: 'admin/manage-user-account', component: ManageUsersComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'Administrator' },
+  },
+  {
+    path: 'admin/update-password', component: UpdatePasswordComponent,
     canActivate: [AuthGuard],
     data: { role: 'Administrator' },
   },

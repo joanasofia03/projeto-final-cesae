@@ -21,7 +21,7 @@ export class AdminComponent implements OnInit {
   userInfo: any;
   userError: string | null = null;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     console.log('ngOnInit called');
@@ -41,6 +41,14 @@ export class AdminComponent implements OnInit {
 
   goToManageBankAccount() {
     this.router.navigate(['/admin/manage-bank-account']);
+  }
+
+  goToManageUserAccount() {
+    this.router.navigate(['/admin/manage-user-account']);
+  }
+
+  goToUpdatePassword() {
+    this.router.navigate(['/admin/update-password']);
   }
 
 }

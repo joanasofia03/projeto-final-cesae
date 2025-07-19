@@ -1,0 +1,57 @@
+<body>
+
+  <main>
+    <h2>Manage Users</h2>
+    <button class="close-btn" onclick="history.back()">&times;</button>
+
+    <div class="search-container">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label class="filter-label" for="user-id">USER ID 🆔</label>
+          <input type="text" id="user-id" class="text-input" placeholder="Enter User ID" [(ngModel)]="searchUserId"
+            (input)="filterUsers()" />
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="user-name">NAME 👤</label>
+          <input type="text" id="user-name" class="text-input" placeholder="Enter Full Name" [(ngModel)]="searchName"
+            (input)="filterUsers()" />
+        </div>
+      </div>
+    </div>
+
+    <table class="account-table">
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Region</th>
+          <th>Birth Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let user of filteredUsers">
+          <tr *ngIf="user.fullName !== 'Administrator'">
+            <td>{{ user.id }}</td>
+            <td>{{ user.fullName }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phoneNumber }}</td>
+            <td>{{ user.region }}</td>
+            <td>{{ user.birthDate | date }}</td>
+            <td>
+              <button (click)="deleteUser(user.id)" class="delete-btn" [disabled]="user.deletedAt">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </main>
+</body>

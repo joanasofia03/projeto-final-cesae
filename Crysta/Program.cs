@@ -431,14 +431,14 @@ using (var scope = app.Services.CreateScope())
             {
                 Email = "admin@domain.com",
                 FullName = "Administrator",
-                PhoneNumber = "99999999999",
-                DocumentId = "12345678900",
+                PhoneNumber = "3128456792",
+                DocumentId = "94721650381",
                 CreationDate = DateTime.Now,
                 BirthDate = new DateTime(1990, 1, 1),
-                Region = "Porto"
+                Region = "Region"
             };
 
-            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "admin123");
+            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin123!");
 
             context.AppUsers.Add(adminUser);
             context.SaveChanges();

@@ -25,7 +25,6 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _context.AppUsers
-            .Where(u => u.DeletedAt == null)
             .Select(u => new
             {
                 u.ID,
@@ -34,7 +33,8 @@ public class UsersController : ControllerBase
                 u.PhoneNumber,
                 u.DocumentId,
                 u.BirthDate,
-                u.Region
+                u.Region,
+                u.DeletedAt
             })
             .ToListAsync();
 
@@ -42,6 +42,23 @@ public class UsersController : ControllerBase
             return NotFound("No users found.");
 
         return Ok(users);
+    }
+
+    // DELETE: http://localhost:5146/api/users/delete/{id}
+    [HttpDelete("delete/{id}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var user = await _context.AppUsers.FindAsync(id);
+
+        if (user == null || user.DeletedAt != null)
+            return NotFound("User not found or already deleted.");
+
+        user.DeletedAt = DateTime.UtcNow;
+        _context.AppUsers.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "User soft-deleted successfully." });
     }
 
     // POST http://localhost:5146/api/users/create-user
