@@ -97,4 +97,4 @@ A aplicação estará disponível em:
 http://localhost:4200
 
 # 📊 Power BI
-A exportação de dados será disponibilizada para visualização via Power BI, permitindo análises financeiras e insights avançados com foco em storytelling e apoio à decisão.
+A exportação de dados será disponibilizada para visualização via Power BI, permitindo análises financeiras e insights avançados com foco em storytelling e apoio à decisão. 
