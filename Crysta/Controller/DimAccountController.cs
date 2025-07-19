@@ -35,6 +35,7 @@ public class Dim_AccountController : ControllerBase
         var accounts = await _context.Set<Dim_Account>()
             .Select(a => new ReadDimAccountDto
             {
+                Account_ID = a.ID,
                 Account_Type = a.Account_Type,
                 Account_Status = a.Account_Status,
                 AppUser_ID = a.AppUser_ID,
@@ -114,7 +115,7 @@ public class Dim_AccountController : ControllerBase
 
     // PUT: http://localhost:5146/api/dim_account/update/{id}
     [HttpPut("update/{id}")]
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateDimAccountDto dto)
     {
         var existing = await _context.Set<Dim_Account>().FindAsync(id);

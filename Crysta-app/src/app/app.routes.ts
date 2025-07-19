@@ -13,6 +13,7 @@ import { TransactionsComponent } from './transactions/transactions';
 import { StatisticsComponent } from './statistics/statistics';
 import { NotificationsComponent } from './notifications/notifications';
 import { OpenBankAccountComponent } from './open-bank-account/open-bank-account';
+import { ManageBankAccountComponent } from './manage-bank-account/manage-bank-account';
 
 export const routes: Routes = [
   { path: '', component: MainPageComponent },
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'client/notifications', component: NotificationsComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'admin/open-bank-account', component: OpenBankAccountComponent },
+  { path: 'admin/manage-bank-account', component: ManageBankAccountComponent },
   { path: 'register', component: RegisterComponent },
   // fallback
   { path: '**', redirectTo: '' },

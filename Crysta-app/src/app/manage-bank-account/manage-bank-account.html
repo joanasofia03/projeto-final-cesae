@@ -1,0 +1,43 @@
+<body>
+  <main>
+    <h2>Manage Bank Accounts</h2>
+    <button class="close-btn" onclick="history.back()">&times;</button>
+
+    <table class="account-table">
+      <thead>
+        <tr>
+          <th>Account ID</th>
+          <th>Owner</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Currency</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let account of accounts">
+          <td>{{ account.account_ID }}</td>
+          <td>{{ account.ownerName }}</td>
+          <td>
+            <select [(ngModel)]="account.account_Type" (change)="updateAccount(account)">
+              <option value="Checking">Checking</option>
+              <option value="Savings">Savings</option>
+            </select>
+          </td>
+          <td>
+            <button (click)="toggleStatus(account)">
+              {{ account.account_Status }}
+            </button>
+          </td>
+          <td>{{ account.currency }}</td>
+          <td>
+            <button (click)="deleteAccount(account.account_ID)" class="delete-btn">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </main>
+</body>
