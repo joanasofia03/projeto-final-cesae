@@ -148,22 +148,22 @@ using (var scope = app.Services.CreateScope())
     }
 
     // CLIENT USERS SEED
-    var client1 = context.AppUsers.FirstOrDefault(u => u.Email == "client1@domain.com");
-    var client2 = context.AppUsers.FirstOrDefault(u => u.Email == "client2@domain.com");
+    var client1 = context.AppUsers.FirstOrDefault(u => u.Email == "john.doe@domain.com");
+    var client2 = context.AppUsers.FirstOrDefault(u => u.Email == "jane.smith@domain.com");
 
     if (client1 == null)
     {
         client1 = new AppUser
         {
-            Email = "client1@domain.com",
-            FullName = "Client One",
-            PhoneNumber = "1234567890",
-            DocumentId = "11111111111",
+            Email = "john.doe@domain.com",
+            FullName = "John Doe",
+            PhoneNumber = "2025550143",
+            DocumentId = "62784910358",
             BirthDate = new DateTime(1995, 5, 10),
-            Region = "Lisbon",
+            Region = "New York",
             CreationDate = DateTime.UtcNow,
         };
-        client1.PasswordHash = passwordHasher.HashPassword(client1, "client123");
+        client1.PasswordHash = passwordHasher.HashPassword(client1, "JohnDoe123!");
         context.AppUsers.Add(client1);
         context.SaveChanges();
 
@@ -179,15 +179,15 @@ using (var scope = app.Services.CreateScope())
     {
         client2 = new AppUser
         {
-            Email = "client2@domain.com",
-            FullName = "Client Two",
-            PhoneNumber = "0987654321",
-            DocumentId = "22222222222",
+            Email = "jane.smith@domain.com",
+            FullName = "Jane Smith",
+            PhoneNumber = "3105550199",
+            DocumentId = "94021736501",
             BirthDate = new DateTime(1993, 8, 20),
-            Region = "Porto",
+            Region = "Georgia",
             CreationDate = DateTime.UtcNow,
         };
-        client2.PasswordHash = passwordHasher.HashPassword(client2, "client123");
+        client2.PasswordHash = passwordHasher.HashPassword(client2, "JaneSmith123!");
         context.AppUsers.Add(client2);
         context.SaveChanges();
 
