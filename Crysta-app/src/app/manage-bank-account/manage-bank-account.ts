@@ -16,6 +16,9 @@ export class ManageBankAccountComponent implements OnInit {
   accounts: any[] = [];
   successMessage: string = '';
   errorMessage: string = '';
+  searchAccountId: string = '';
+  searchOwner: string = '';
+  filteredAccounts: any[] = [];
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -27,7 +30,8 @@ export class ManageBankAccountComponent implements OnInit {
     this.http.get<any[]>('http://localhost:5146/api/dim_account/getall').subscribe({
       next: async data => {
         this.accounts = data;
-        
+        this.filteredAccounts = [...data];
+
         const nameFetches = this.accounts.map(account =>
           this.http.get<any>(`http://localhost:5146/api/users/${account.appUser_ID}`).toPromise()
             .then(user => account.ownerName = user.fullName)
@@ -41,6 +45,17 @@ export class ManageBankAccountComponent implements OnInit {
         console.error(err);
         this.errorMessage = 'Failed to load accounts.';
       }
+    });
+  }
+
+  filterAccounts() {
+    const idFilter = this.searchAccountId.toLowerCase();
+    const ownerFilter = this.searchOwner.toLowerCase();
+
+    this.filteredAccounts = this.accounts.filter(account => {
+      const accountIdMatch = account.account_ID.toString().includes(idFilter);
+      const ownerMatch = (account.ownerName || '').toLowerCase().includes(ownerFilter);
+      return accountIdMatch && ownerMatch;
     });
   }
 

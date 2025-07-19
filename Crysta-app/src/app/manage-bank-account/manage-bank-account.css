@@ -150,6 +150,63 @@ h2 {
     border: 1px solid #ef9a9a;
 }
 
+.search-container {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+}
+
+.search-container input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  flex: 1;
+  transition: border 0.2s;
+}
+
+.search-container input:focus {
+  border-color: #8e24aa;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(142, 36, 170, 0.2);
+}
+
+.filter-bar {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.text-input,
+.date-input {
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.2s ease;
+}
+
+.text-input:focus,
+.date-input:focus {
+  border-color: #8e24aa;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(142, 36, 170, 0.2);
+}
+
+
 @media (max-width: 600px) {
     main {
         padding: 24px;
