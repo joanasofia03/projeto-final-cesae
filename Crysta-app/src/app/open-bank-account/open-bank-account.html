@@ -1,49 +1,57 @@
-<h2>Open Bank Account</h2>
+<body>
+    <main>
+        <div class="open-account-container">
+        <h2>Open Bank Account</h2>
+        <button class="close-btn" onclick="history.back()">&times;</button>
 
-<form (ngSubmit)="openAccount()" #accountForm="ngForm">
-    <label>Owner:</label>
-    <select [(ngModel)]="accountData.userId" name="userId" required>
-        <option value="" disabled selected>Select status</option>
-        <ng-container *ngFor="let user of users">
+        <form class="open-account-form" (ngSubmit)="openAccount()" #accountForm="ngForm">
+            <div class="form-group">
+            <label>Owner:</label>
+            <select [(ngModel)]="accountData.userId" name="userId" required>
+                <option value="" disabled selected>Select status</option>
+                <ng-container *ngFor="let user of users">
 
-            <option *ngIf="user.fullName !== 'Administrator'" [value]="user.id">
-                {{ user.id }} - {{ user.fullName }}
-            </option>
-        </ng-container>
-    </select>
-
-    <div>
-        <label>Account Type:</label>
-        <select [(ngModel)]="accountData.account_Type" name="account_Type" required>
-            <option value="" disabled selected>Select account type</option>
-            <option value="Checking">Checking</option>
-            <option value="Savings">Savings</option>
-        </select>
-    </div>
-
-
-    <div>
-        <label>Account Status:</label>
-        <select [(ngModel)]="accountData.account_Status" name="account_Status" required>
-            <option value="" disabled selected>Select status</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-        </select>
-    </div>
-
-
-    <div>
-        <label>Currency:</label>
-        <select [(ngModel)]="accountData.currency" name="currency" required>
-            <option value="" disabled selected>Select currency</option>
-            <option value="USD">USD</option>
-        </select>
-    </div>
-
-
-    <button type="submit">Create Account</button>
-</form>
-
-<div *ngIf="message">
-    <p>{{ message }}</p>
+                    <option *ngIf="user.fullName !== 'Administrator'" [value]="user.id">
+                        {{ user.id }} - {{ user.fullName }}
+                    </option>
+                </ng-container>
+            </select>
 </div>
+            <div class="form-group">
+                <label>Account Type:</label>
+                <select [(ngModel)]="accountData.account_Type" name="account_Type" required>
+                    <option value="" disabled selected>Select account type</option>
+                    <option value="Checking">Checking</option>
+                    <option value="Savings">Savings</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label>Account Status:</label>
+                <select [(ngModel)]="accountData.account_Status" name="account_Status" required>
+                    <option value="" disabled selected>Select status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label>Currency:</label>
+                <select [(ngModel)]="accountData.currency" name="currency" required>
+                    <option value="" disabled selected>Select currency</option>
+                    <option value="USD">USD</option>
+                </select>
+            </div>
+
+
+            <button type="submit" class="create-button" [disabled]="!accountForm.form.valid">Create Account</button>
+        </form>
+
+        <div *ngIf="message" class="success-message">{{ message }}</div>
+
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+        </div>
+    </main>
+</body>

@@ -8,7 +8,7 @@
         <div class="form-group">
           <label for="sourceAccount">Source Account:</label>
           <select id="sourceAccount" [(ngModel)]="transaction.sourceAccountId" name="sourceAccount" required>
-            <option value="" disabled>-- Select source account --</option>
+            <option value="" disabled>Select source account</option>
             <option *ngFor="let acc of balances" [value]="acc.accountId">
               {{ acc.accountId }} - {{ acc.accountType }}
             </option>
