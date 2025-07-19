@@ -2,7 +2,7 @@
 
 Este projeto faz parte do plano final integrado da **Academia Natixis 2025** e tem como objetivo aplicar na prática os conhecimentos adquiridos em desenvolvimento backend, frontend, base de dados, segurança, visualização de dados e metodologias ágeis.
 
-Atualmente, **o foco está no desenvolvimento do backend com ASP.NET Web API e SQL Server.**
+Atualmente, **o projeto encontra-se concluído.**
 
 # 📌 Tema
 **Plataforma Web Bancária com Integração de Cotações Reais de Ativos Financeiros**
@@ -15,10 +15,10 @@ A aplicação tem como objetivo oferecer ao utilizador uma visão centralizada d
 | ------------- | --------------------- |
 | Backend       | ASP.NET Core Web API  |
 | Base de Dados | SQL Server            |
-| Frontend      | Angular *(futuro)*    |
-| Visualização  | Power BI *(planeado)* |
+| Frontend      | Angular               |
+| Visualização  | Power BI              |
 | Segurança     | JWT, Hashing, Logs    |
-| API Externa   | \[A definir]          |
+| API Externa   | CryptoCompare         |
 | Gestão Ágil   | Trello                |
 
 # 🧱 Estrutura Atual do Backend 
@@ -43,27 +43,58 @@ A aplicação tem como objetivo oferecer ao utilizador uma visão centralizada d
 
 ├── JwtSettings.cs
 
+├── TransactionSettings.cs
+
 └── Program.cs
 
 # ▶️ Como Executar o Projeto (Backend)
 
-**Clonar o repositório:**
+- **Clonar o repositório:**
+  ```bash
+    git clone https://github.com/joanaperpetuo263162630/projeto-final-cesae.git
 
-git clone https://github.com/joanaperpetuo263162630/projeto-final-cesae.git
+- **Aceder à pasta do backend:**
+  ```bash
+    cd Crysta
 
-**Aceder à pasta do backend:**
+- **Configurar a base de dados no appsettings.json**
 
-cd Crysta
+- **Correr as migrations:**
+  ```bash
+    dotnet ef database update
 
-**Configurar a base de dados no appsettings.json**
+- **Iniciar a aplicação:**
+  ```bash
+    dotnet run
 
-**Correr as migrations:**
+# ▶️ Como Executar o Projeto (Frontend)
 
-dotnet ef database update
+## 📦 Pré-requisitos
 
-**Iniciar a aplicação:**
+- **Node.js** (versão LTS recomendada)
+- **Angular CLI** instalado globalmente:
+  
+  ```bash
+  npm install -g @angular/cli
 
-dotnet run
+- **Aceder à pasta do frontend:**
+
+    ```bash
+    cd projeto-final-cesae/Crysta-app
+
+- **Instalar as dependências:**
+
+    ```bash
+    npm install
+
+- **Iniciar a aplicação:**
+    ```bash
+    ng serve
+
+- **Abrir no navegador:**
+
+A aplicação estará disponível em:
+http://localhost:4200
 
 # 📊 Power BI
 A exportação de dados será disponibilizada para visualização via Power BI, permitindo análises financeiras e insights avançados com foco em storytelling e apoio à decisão.
