@@ -23,6 +23,7 @@ export class RegisterComponent {
   };
 
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -30,6 +31,10 @@ export class RegisterComponent {
   this.userService.createUser(this.userData).subscribe({
   next: (res) => {
     console.log('User created:', res);
+
+    this.successMessage = 'User created successfully';
+    this.errorMessage = '';
+
   },
   error: (err) => {
     if (err.status === 400) {
