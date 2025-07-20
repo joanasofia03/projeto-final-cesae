@@ -117,7 +117,7 @@ export class MakeTransferComponent implements OnInit {
       Transaction_Amount: this.transaction.amount,
       Execution_Channel: this.transaction.channel,
       Transaction_Status: this.transaction.status,
-      Transaction_Type_ID: 2
+      Transaction_Type_ID: 1
     };
 
     this.http.post('http://localhost:5146/api/fact_transactions/create-transaction', transferDto)
